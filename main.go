@@ -1,16 +1,17 @@
 package main
 
 import (
-	"IOT_Storage/src/Web"
-	"log"
-	"net/http"
+	"IOT_Storage/src/Node"
+	"time"
 )
 
 func main() {
-	http.HandleFunc("/", Web.HelloWorld)
-	http.HandleFunc("/login", Web.Login)
-	err := http.ListenAndServe(":9090", nil)
-	if err != nil {
-		log.Fatal("ListenAndServe:", err)
+	router := Node.Ping()
+	go router.Run(":8080")
+	for {
+		time.Sleep(time.Second * 5)
+		go Node.Send()
 	}
+	router_1 := Node.Login()
+	router_1.Run(":8090")
 }
