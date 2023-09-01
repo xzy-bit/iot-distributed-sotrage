@@ -1,17 +1,29 @@
 package main
 
 import (
-	"IOT_Storage/src/Node"
-	"time"
+	"IOT_Storage/src/IOT_Device"
+	"IOT_Storage/src/Identity_Verify"
+	"os"
 )
 
 func main() {
-	router := Node.Ping()
-	go router.Run(":8080")
-	for {
-		time.Sleep(time.Second * 5)
-		go Node.Send()
+	//iot device process
+	file, _ := os.Open("private.pem")
+	if file == nil {
+		Identity_Verify.GenerateKey(false)
 	}
-	router_1 := Node.Login()
-	router_1.Run(":8090")
+	IOT_Device.IotInit()
+
+	////server process
+	//router := Node.Ping()
+	//go router.Run(":8080")
+
+	//routerReceivePublicKey := Controller.ReceivePublicKey()
+	//routerReceivePublicKey.Run(":8090")
+
+	////user process
+	//userIsAlive := User.Ping()
+	//go userIsAlive.Run(":8080")
+	//userReceiveKeys := User.ReceiveKeys()
+	//userReceiveKeys.Run(":8090")
 }

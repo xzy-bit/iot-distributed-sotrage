@@ -30,9 +30,8 @@ func GenerateKey(userProvide bool) {
 		}
 
 		// pem coding
-		file, _ := os.Create("private.pem")
-		defer file.Close()
-		pem.Encode(file, &block)
+		privateFile, _ := os.Create("private.pem")
+		pem.Encode(privateFile, &block)
 
 		// get public key
 		publicKey := privateKey.PublicKey
@@ -43,12 +42,13 @@ func GenerateKey(userProvide bool) {
 			Type:  "ECDSA public key",
 			Bytes: tempText,
 		}
+		publicFile, _ := os.Create("public.pem")
+		pem.Encode(publicFile, &block)
 
-		file, _ = os.Create("public.pem")
-		defer file.Close()
-		pem.Encode(file, &block)
+		privateFile.Close()
+		publicFile.Close()
 	}
-
+	return
 }
 
 func Sign(message []byte, privateName string) (rText, sText []byte) {
