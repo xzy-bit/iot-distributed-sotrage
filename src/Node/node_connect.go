@@ -1,12 +1,16 @@
 package Node
 
 import (
+	"IOT_Storage/src/Block_Chain"
 	"IOT_Storage/src/Identity_Verify"
 	"crypto/rand"
 	"github.com/gin-gonic/gin"
 	"log"
 	"math/big"
 )
+
+var head *Block_Chain.DataNode
+var tail *Block_Chain.DataNode
 
 type Sign struct {
 	RText []byte
@@ -33,6 +37,22 @@ func Challenge() *gin.Engine {
 		} else {
 			context.String(200, "OK")
 		}
+	})
+	return router
+}
+
+func GetSlice() *gin.Engine {
+	router := gin.Default()
+	router.POST("slice", func(context *gin.Context) {
+		cipherStr, _ := context.Get("cipher")
+		pStr, _ := context.Get("modNum")
+		iotId, _ := context.Get("iotId")
+
+		log.Println(cipherStr)
+		log.Println(pStr)
+		log.Println(iotId)
+
+		context.String(200, "Get slice")
 	})
 	return router
 }
