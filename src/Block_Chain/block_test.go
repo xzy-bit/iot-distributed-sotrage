@@ -48,74 +48,72 @@ func TestDataHash(t *testing.T) {
 	fd, _ := os.OpenFile("data.txt", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0755)
 
 	data1 := DATA{
-		DeviceID:  "MacBook",
-		UserId:    "user_0",
-		PubKey:    "0",
-		TimeStamp: time.Now().UTC(),
-		Serial:    0,
-		Hash:      nil,
-		StoreOn:   "",
-		ModNum:    nil,
+		"MacBook",
+		time.Now().UTC(),
+		0,
+		nil,
+		"",
+		nil,
 	}
 	DataHash(&data1)
 	info1, _ := json.Marshal(data1)
 	fd.Write(info1)
 	fd.Write([]byte("\n"))
 	data2 := DATA{
-		DeviceID:  "1",
-		UserId:    "User_1",
-		PubKey:    "1",
-		TimeStamp: time.Now().UTC(),
-		Serial:    1,
-		ModNum:    nil,
+		"1",
+		time.Now().UTC(),
+		1,
+		nil,
+		"",
+		nil,
 	}
 	DataHash(&data2)
 	info2, _ := json.Marshal(data2)
 	fd.Write(info2)
 	fd.Write([]byte("\n"))
 	data3 := DATA{
-		DeviceID:  "2",
-		UserId:    "user_2",
-		PubKey:    "2",
-		TimeStamp: time.Now().UTC(),
-		Serial:    2,
-		ModNum:    nil,
+		"2",
+		time.Now().UTC(),
+		2,
+		nil,
+		"",
+		nil,
 	}
 	DataHash(&data3)
 	info3, _ := json.Marshal(data3)
 	fd.Write(info3)
 	fd.Write([]byte("\n"))
 	data4 := DATA{
-		DeviceID:  "3",
-		UserId:    "user_3",
-		PubKey:    "3",
-		TimeStamp: time.Now().UTC(),
-		Serial:    3,
-		ModNum:    nil,
+		"3",
+		time.Now().UTC(),
+		3,
+		nil,
+		"",
+		nil,
 	}
 	DataHash(&data4)
 	info4, _ := json.Marshal(data4)
 	fd.Write(info4)
 	fd.Write([]byte("\n"))
 	data5 := DATA{
-		DeviceID:  "4",
-		UserId:    "user_4",
-		PubKey:    "4",
-		TimeStamp: time.Now().UTC(),
-		Serial:    4,
-		ModNum:    nil,
+		"4",
+		time.Now().UTC(),
+		4,
+		nil,
+		"",
+		nil,
 	}
 	DataHash(&data5)
 	info5, _ := json.Marshal(data5)
 	fd.Write(info5)
 	fd.Write([]byte("\n"))
 	data6 := DATA{
-		DeviceID:  "5",
-		UserId:    "user_5",
-		PubKey:    "5",
-		TimeStamp: time.Now().UTC(),
-		Serial:    5,
-		ModNum:    nil,
+		"5",
+		time.Now().UTC(),
+		5,
+		nil,
+		"",
+		nil,
 	}
 	DataHash(&data6)
 	info6, _ := json.Marshal(data6)

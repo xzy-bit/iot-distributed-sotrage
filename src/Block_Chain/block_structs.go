@@ -27,8 +27,6 @@ type BlockChain struct {
 
 type DATA struct {
 	DeviceID  string
-	UserId    string
-	PubKey    string
 	TimeStamp time.Time
 	Serial    int
 	Hash      []byte
