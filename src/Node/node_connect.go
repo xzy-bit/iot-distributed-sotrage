@@ -26,9 +26,13 @@ func Challenge() *gin.Engine {
 			log.Println(sign.RText)
 			log.Println(sign.SText)
 		}
-		result := Identity_Verify.Verify(random.Bytes(), sign.RText, sign.SText, "public.pem")
-		log.Println(result)
-		context.String(200, "OK")
+		randomBytes, _ := random.MarshalJSON()
+		result := Identity_Verify.Verify(randomBytes, sign.RText, sign.SText, "public.pem")
+		if result == false {
+			context.String(502, "Your identification's verification does not pass!")
+		} else {
+			context.String(200, "OK")
+		}
 	})
 	return router
 }
