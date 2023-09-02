@@ -1,11 +1,9 @@
 package main
 
-import (
-	"IOT_Storage/src/User"
-)
+import "IOT_Storage/src/User"
 
 func main() {
-	//iot device process
+	////iot device process
 	//file, _ := os.Open("private.pem")
 	//if file == nil {
 	//	Identity_Verify.GenerateKey(false)

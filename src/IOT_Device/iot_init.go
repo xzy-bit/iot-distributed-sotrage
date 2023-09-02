@@ -30,22 +30,23 @@ func IotInit() {
 	publicFile.Close()
 	fmt.Println(userId)
 
-	privateFile, _ := os.Open("private.pem")
-	sendPrivateToServer := Controller.CreateSendFileReq(privateFile, userId+".pem", "http://192.168.42.129:8090/receive")
-	privateFile.Close()
-
 	publicFile, _ = os.Open("public.pem")
 	sendPublicToUser := Controller.CreateSendFileReq(publicFile, "public.pem", "http://localhost:8090/receive")
+	publicFile.Close()
 
-	resp := Controller.SendRequest(sendPublicToUser)
+	publicFile, _ = os.Open("public.pem")
+	sendPublicToServer := Controller.CreateSendFileReq(publicFile, userId+".pem", "http://192.168.42.129:8090/receive")
+	publicFile.Close()
+
+	privateFile, _ := os.Open("private.pem")
+	sendPrivateToUser := Controller.CreateSendFileReq(privateFile, "private.pem", "http://localhost:8090/receive")
+
+	resp := Controller.SendRequest(sendPublicToServer)
 	if resp.StatusCode != 200 {
 		log.Fatal(resp.StatusCode)
 	}
 
-	privateFile, _ = os.Open("private.pem")
-	sendPrivateToUser := Controller.CreateSendFileReq(privateFile, "private.pem", "http://localhost:8090/receive")
-
-	resp = Controller.SendRequest(sendPrivateToServer)
+	resp = Controller.SendRequest(sendPublicToUser)
 	if resp.StatusCode != 200 {
 		log.Fatal(resp.StatusCode)
 	}

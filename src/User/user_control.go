@@ -42,12 +42,12 @@ func Ping() *gin.Engine {
 	return router
 }
 
-func SignForRandom(url string) {
+func SignForRandom(url string) bool {
 	reqForChallenge, _ := http.NewRequest("GET", url+"/challenge", nil)
 	resp := Controller.SendRequest(reqForChallenge)
 	if resp.StatusCode != 200 {
 		log.Fatal("cannot get random")
-		return
+		return false
 	}
 
 	body, _ := io.ReadAll(resp.Body)
@@ -67,6 +67,7 @@ func SignForRandom(url string) {
 	resp = Controller.SendRequest(reqForSign)
 	if resp.StatusCode != 200 {
 		log.Fatal("cannot get random")
-		return
+		return false
 	}
+	return true
 }
