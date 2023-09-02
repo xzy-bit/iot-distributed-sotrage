@@ -27,5 +27,5 @@ func main() {
 	////go userIsAlive.Run(":8080")
 	////userReceiveKeys := User.ReceiveKeys()
 	////userReceiveKeys.Run(":8090")
-	User.SignForRandom("http://localhost:8081")
+	User.SignForRandom("http://192.168.42.129:8081")
 }
