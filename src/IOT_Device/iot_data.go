@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strconv"
 )
 
 type Student struct {
@@ -31,7 +32,13 @@ func SendSliceToNode(nodes []string) {
 	file.Close()
 
 	for index, node := range nodes {
-		body := url.Values{"cipher": {ciphertext[index].String()}, "modNum": {p.String()}, "iotId": {iotId}}
+		body := url.Values{
+			"cipher":  {ciphertext[index].String()},
+			"modNum":  {p.String()},
+			"iotId":   {iotId},
+			"serial":  {strconv.Itoa(index)},
+			"address": {node},
+		}
 		resp, _ := http.PostForm(node+"/slice", body)
 		if resp.StatusCode != 200 {
 			log.Fatal("can not send data to nodes")

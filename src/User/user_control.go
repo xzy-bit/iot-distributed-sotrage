@@ -69,5 +69,6 @@ func SignForRandom(url string) bool {
 		log.Fatal("cannot get random")
 		return false
 	}
+	fmt.Println(resp.StatusCode)
 	return true
 }

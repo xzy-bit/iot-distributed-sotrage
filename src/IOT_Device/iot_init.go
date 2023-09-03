@@ -26,16 +26,16 @@ func GenerateIotId(file *os.File) (id string) {
 func IotInit() {
 
 	publicFile, _ := os.Open("public.pem")
-	userId := GenerateIotId(publicFile)
+	iotId := GenerateIotId(publicFile)
 	publicFile.Close()
-	fmt.Println(userId)
+	fmt.Println(iotId)
 
 	publicFile, _ = os.Open("public.pem")
 	sendPublicToUser := Controller.CreateSendFileReq(publicFile, "public.pem", "http://localhost:8090/receive")
 	publicFile.Close()
 
 	publicFile, _ = os.Open("public.pem")
-	sendPublicToServer := Controller.CreateSendFileReq(publicFile, userId+".pem", "http://192.168.42.129:8090/receive")
+	sendPublicToServer := Controller.CreateSendFileReq(publicFile, iotId+".pem", "http://192.168.42.129:8090/receive")
 	publicFile.Close()
 
 	privateFile, _ := os.Open("private.pem")
