@@ -4,13 +4,11 @@ import (
 	"IOT_Storage/src/Block_Chain"
 	"IOT_Storage/src/Identity_Verify"
 	"crypto/rand"
+	"encoding/hex"
 	"github.com/gin-gonic/gin"
 	"log"
 	"math/big"
 )
-
-var head *Block_Chain.DataNode
-var tail *Block_Chain.DataNode
 
 type Sign struct {
 	RText []byte
@@ -37,21 +35,35 @@ func Challenge() *gin.Engine {
 		} else {
 			context.String(200, "OK")
 		}
+		log.Println(result)
 	})
 	return router
 }
 
-func GetSlice() *gin.Engine {
+func ServerGetSlice() *gin.Engine {
+	var head *Block_Chain.DataNode
+	var tail *Block_Chain.DataNode
 	router := gin.Default()
 	router.POST("slice", func(context *gin.Context) {
-		cipherStr, _ := context.Get("cipher")
-		pStr, _ := context.Get("modNum")
-		iotId, _ := context.Get("iotId")
+		cipherStr := context.PostForm("cipher")
+		iotId := context.PostForm("iotId")
+		serialStr := context.PostForm("serial")
+		address := context.PostForm("address")
+		modNumStr := context.PostForm("modNum")
 
 		log.Println(cipherStr)
-		log.Println(pStr)
 		log.Println(iotId)
+		log.Println(serialStr)
+		log.Println(address)
+		log.Println(modNumStr)
 
+		dataIndex := GenerateDATA(iotId, serialStr, address, modNumStr)
+		AddDataToCache(head, tail, dataIndex)
+
+		hash := hex.EncodeToString(dataIndex.Hash)
+		fileName := "./slices/" + hash + ".slc"
+		//context.SaveUploadedFile()
+		SaveSlice(cipherStr, fileName)
 		context.String(200, "Get slice")
 	})
 	return router

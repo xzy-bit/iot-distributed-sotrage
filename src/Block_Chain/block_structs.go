@@ -6,8 +6,8 @@ import (
 )
 
 type DataNode struct {
-	data DATA
-	next *DataNode
+	Data DATA
+	Next *DataNode
 }
 
 type Block struct {

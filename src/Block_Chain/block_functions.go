@@ -12,9 +12,6 @@ import (
 	"time"
 )
 
-var head *DataNode
-var tail *DataNode
-
 func GetPrevBlock() Block {
 	file, err := os.Open("backup.txt")
 	if err != nil {
@@ -72,6 +69,8 @@ func DataHash(data *DATA) {
 	info := bytes.Join([][]byte{
 		[]byte(data.DeviceID),
 		[]byte(data.TimeStamp.String()),
+		[]byte(data.StoreOn),
+		data.ModNum.Bytes(),
 	}, []byte{})
 	hash := sha256.Sum256(info)
 	data.Hash = hash[:]
