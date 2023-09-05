@@ -15,6 +15,15 @@ type Sign struct {
 	SText []byte
 }
 
+func Ping() *gin.Engine {
+	router := gin.Default()
+	router.GET("ping", func(context *gin.Context) {
+		context.String(200, "pong")
+
+	})
+	return router
+}
+
 func Challenge() *gin.Engine {
 	var sign Sign
 	var random *big.Int

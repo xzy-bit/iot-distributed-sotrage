@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-// Create blockChain and store in backup.txt , then read and reconstruct block
+// Create blockChain and store in backup.json , then read and reconstruct block
 func TestBlockGenerateAndStore(t *testing.T) {
 	blockchain := CreateBlockChain()
 	time.Sleep(time.Second)

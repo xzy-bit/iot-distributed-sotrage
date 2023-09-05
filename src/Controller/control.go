@@ -47,6 +47,11 @@ func CreateSendFileReq(file *os.File, fileName string, url string) *http.Request
 	return req
 }
 
+func CreatePingReq(url string) *http.Request {
+	req, _ := http.NewRequest("GET", url+"/ping", nil)
+	return req
+}
+
 // proxy iot device to send the request
 func SendRequest(r *http.Request) *http.Response {
 	client := &http.Client{}

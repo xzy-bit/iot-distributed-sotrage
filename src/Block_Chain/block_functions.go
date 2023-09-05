@@ -13,7 +13,7 @@ import (
 )
 
 func GetPrevBlock() Block {
-	file, err := os.Open("backup.txt")
+	file, err := os.Open("backup.json")
 	if err != nil {
 		log.Fatal("Open backup error!\n")
 	}
@@ -37,7 +37,7 @@ func GetPrevBlock() Block {
 }
 
 func StoreBlock(newBlock Block) {
-	fd, _ := os.OpenFile("backup.txt", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0755)
+	fd, _ := os.OpenFile("backup.json", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0755)
 	blockInfo, _ := json.Marshal(newBlock)
 
 	//block := Block{}

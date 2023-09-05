@@ -7,7 +7,7 @@ import (
 )
 
 func TestBuildTraverser(t *testing.T) {
-	filepath := string("../Block_Chain/backup.txt")
+	filepath := string("backup.json")
 	tree := BuildTraverser(filepath)
 
 	if tree.Empty() == true {
