@@ -3,6 +3,7 @@ package Node
 import (
 	"IOT_Storage/src/Block_Chain"
 	"IOT_Storage/src/Controller"
+	"IOT_Storage/src/File_Index"
 	"IOT_Storage/src/Identity_Verify"
 	"bytes"
 	"crypto/rand"
@@ -120,6 +121,10 @@ func NodeGetBlock() *gin.Engine {
 			log.Println("failed to create block")
 		}
 		log.Println(block)
+
+		File_Index.InsertBlock(&block, tree)
+		Block_Chain.StoreBlock(block)
+
 		context.String(200, "Get block")
 	})
 	return router

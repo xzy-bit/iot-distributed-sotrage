@@ -46,12 +46,12 @@ func IotInit() {
 		log.Fatal(resp.StatusCode)
 	}
 
-	resp = Controller.SendRequest(sendPublicToUser)
+	Controller.SendRequest(sendPublicToUser)
 	if resp.StatusCode != 200 {
 		log.Fatal(resp.StatusCode)
 	}
 
-	resp = Controller.SendRequest(sendPrivateToUser)
+	Controller.SendRequest(sendPrivateToUser)
 	if resp.StatusCode != 200 {
 		log.Fatal(resp.StatusCode)
 	}

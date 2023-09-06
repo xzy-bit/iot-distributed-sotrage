@@ -1,6 +1,7 @@
 package Node
 
 import (
+	"IOT_Storage/src/Block_Chain"
 	"encoding/json"
 	"github.com/emirpasic/gods/trees/avltree"
 	"log"
@@ -47,6 +48,13 @@ func ReadConfig() *Config {
 
 func NodeInit() {
 	nodeConfig = ReadConfig()
+
+	genius := Block_Chain.GeniusBlock()
+
+	BroadCastBlock(*genius)
+
+	Block_Chain.StoreBlock(*genius)
+
 	//pingRouter := Ping()
 	//go pingRouter.Run(config.Port)
 

@@ -54,12 +54,22 @@ func CreatePingReq(url string) *http.Request {
 
 // proxy iot device to send the request
 func SendRequest(r *http.Request) *http.Response {
-	client := &http.Client{}
-	resp, err := client.Do(r)
-	if err == nil {
+	respCh := make(chan *http.Response, 1)
+	go func() {
+
+		client := &http.Client{}
+
+		resp, err := client.Do(r)
+		respCh <- resp
+		if resp != nil {
+			defer resp.Body.Close()
+		}
+		if err != nil {
+			fmt.Println(err)
+		}
+	}()
+	select {
+	case resp := <-respCh:
 		return resp
-	} else {
-		log.Fatal(err)
-		return nil
 	}
 }

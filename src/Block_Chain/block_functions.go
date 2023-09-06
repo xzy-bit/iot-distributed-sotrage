@@ -50,7 +50,7 @@ func StoreBlock(newBlock Block) {
 	return
 }
 
-func GenesisBlock() *Block {
+func GeniusBlock() *Block {
 	block := Block{0, time.Now().UTC(), nil, nil, -1, 1, nil}
 	return &block
 }
@@ -80,7 +80,7 @@ func DataHash(data *DATA) {
 func GenerateBlock(oldBlock Block, Data []DATA) Block {
 	var newBlock Block
 	//if &oldBlock == nil {
-	//	return *GenesisBlock()
+	//	return *GeniusBlock()
 	//}
 	t := time.Now().UTC()
 
@@ -97,7 +97,7 @@ func GenerateBlock(oldBlock Block, Data []DATA) Block {
 
 func CreateBlockChain() *BlockChain {
 	blockchain := BlockChain{}
-	blockchain.Blocks = append(blockchain.Blocks, GenesisBlock())
+	blockchain.Blocks = append(blockchain.Blocks, GeniusBlock())
 	blockchain.size = 0
 	return &blockchain
 }

@@ -6,7 +6,6 @@ import (
 	"IOT_Storage/src/File_Index"
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"log"
 	"math/big"
@@ -93,11 +92,13 @@ func HandleData(data []Block_Chain.DATA) {
 func BroadCastBlock(block Block_Chain.Block) {
 	blockInfo, _ := json.Marshal(&block)
 
-	for _, node := range nodeConfig.AddressBook {
+	for index, node := range nodeConfig.AddressBook {
+		if index == nodeConfig.NodeId {
+			continue
+		}
 		reader := bytes.NewReader(blockInfo)
 		req, _ := http.NewRequest("GET", node+"/block", reader)
 		req.Header.Set("Content-Type", "application/json")
-		resp := Controller.SendRequest(req)
-		fmt.Println(resp.StatusCode)
+		Controller.SendRequest(req)
 	}
 }
