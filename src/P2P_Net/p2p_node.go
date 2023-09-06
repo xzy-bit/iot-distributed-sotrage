@@ -14,7 +14,7 @@ import (
 
 func P2pPing() {
 
-	node, err := libp2p.New(libp2p.ListenAddrStrings("/ip4/127.0.0.1/tcp/2000"),
+	node, err := libp2p.New(libp2p.ListenAddrStrings("/ip4/127.0.0.1/tcp/0"),
 		libp2p.Ping(false),
 	)
 	if err != nil {
@@ -43,11 +43,14 @@ func P2pPing() {
 		if err != nil {
 			panic(err)
 		}
+		if err := node.Connect(context.Background(), *peer); err != nil {
+			panic(err)
+		}
 		fmt.Println("sending 5 ping messages to ", addr)
 		ch := pingService.Ping(context.Background(), peer.ID)
 		for i := 0; i < 5; i++ {
 			res := <-ch
-			fmt.Println("got ping response!", "RTT:", res.RTT)
+			fmt.Println("pinged", addr, "in", res.RTT)
 		}
 	} else {
 		//wait for cmd to shut dwon
@@ -57,3 +60,33 @@ func P2pPing() {
 		fmt.Println("Received signal , shutting down...")
 	}
 }
+
+//func P2PDiscoverNodes() {
+//	host, err := libp2p.New(libp2p.ListenAddrStrings("/ip4/127.0.0.1/tcp/0"))
+//	if err != nil {
+//		panic(err)
+//	}
+//	ctx := context.Background()
+//	kademliaDHT, err := dht.NewDHT(ctx, host)
+//	if err != nil {
+//		panic(err)
+//	}
+//
+//	var wg sync.WaitGroup
+//	for _, peerAddr := range dht.DefaultBootstrapPeers {
+//		peerinfo, _ := peerstore.AddrInfoFromP2pAddr(peerAddr)
+//		wg.Add(1)
+//		go func() {
+//			defer wg.Done()
+//			if err := host.Connect(ctx, *peerinfo); err != nil {
+//				logger.Warning(err)
+//			} else {
+//				logger.Info("Connection established with bootstrap node:", *peerinfo)
+//			}
+//		}()
+//	}
+//	wg.Wait()
+//
+//	routingDiscovery := drouting.NewRoutingDiscovery(kademliaDHT)
+//
+//}

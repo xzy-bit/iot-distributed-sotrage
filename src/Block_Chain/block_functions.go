@@ -79,6 +79,9 @@ func DataHash(data *DATA) {
 
 func GenerateBlock(oldBlock Block, Data []DATA) Block {
 	var newBlock Block
+	//if &oldBlock == nil {
+	//	return *GenesisBlock()
+	//}
 	t := time.Now().UTC()
 
 	newBlock.Index = oldBlock.Index + 1

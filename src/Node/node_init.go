@@ -1,12 +1,14 @@
 package Node
 
 import (
-	"IOT_Storage/src/Controller"
 	"encoding/json"
+	"github.com/emirpasic/gods/trees/avltree"
 	"log"
 	"os"
-	"time"
 )
+
+var tree *avltree.Tree
+var nodeConfig *Config
 
 type Config struct {
 	NodeId      int
@@ -44,44 +46,43 @@ func ReadConfig() *Config {
 }
 
 func NodeInit() {
-	config := ReadConfig()
-
+	nodeConfig = ReadConfig()
 	//pingRouter := Ping()
 	//go pingRouter.Run(config.Port)
 
-	sig := make(chan bool)
-	count := 1
-	//tree := File_Index.BuildTraverser("backup.json")
-	for nodeId, nodeAddress := range config.AddressBook {
-		if nodeId == config.NodeId {
-			continue
-		}
-		go func(nodeAddress string) {
-			req := Controller.CreatePingReq(nodeAddress)
-			for {
-				resp := Controller.SendRequest(req)
-				if resp.StatusCode != 200 {
-					log.Printf("Can not get connection with %s\n", nodeAddress)
-					time.Sleep(time.Second)
-					sig <- false
-					continue
-				}
-				sig <- true
-				break
-			}
-		}(nodeAddress)
-	}
-	go func() {
-		for {
-			select {
-			case <-sig:
-				count++
-				log.Printf("%d nodes connected\n", count)
-			}
-			if count == 7 {
-				break
-			}
-		}
-	}()
-	log.Println(count)
+	//sig := make(chan bool)
+	//count := 1
+	////tree := File_Index.BuildTraverser("backup.json")
+	//for nodeId, nodeAddress := range nodeConfig.AddressBook {
+	//	if nodeId == nodeConfig.NodeId {
+	//		continue
+	//	}
+	//	go func(nodeAddress string) {
+	//		req := Controller.CreatePingReq(nodeAddress)
+	//		for {
+	//			resp := Controller.SendRequest(req)
+	//			if resp.StatusCode != 200 {
+	//				log.Printf("Can not get connection with %s\n", nodeAddress)
+	//				time.Sleep(time.Second)
+	//				sig <- false
+	//				continue
+	//			}
+	//			sig <- true
+	//			break
+	//		}
+	//	}(nodeAddress)
+	//}
+	//go func() {
+	//	for {
+	//		select {
+	//		case <-sig:
+	//			count++
+	//			log.Printf("%d nodes connected\n", count)
+	//		}
+	//		if count == 7 {
+	//			break
+	//		}
+	//	}
+	//}()
+	//log.Println(count)
 }

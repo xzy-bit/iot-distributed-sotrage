@@ -2,9 +2,15 @@ package Node
 
 import (
 	"IOT_Storage/src/Block_Chain"
+	"IOT_Storage/src/Controller"
+	"IOT_Storage/src/File_Index"
 	"bytes"
+	"encoding/json"
+	"fmt"
 	"io"
+	"log"
 	"math/big"
+	"net/http"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -50,4 +56,48 @@ func SaveSlice(cipher string, fileName string) {
 	defer out.Close()
 	reader := bytes.NewReader([]byte(cipher))
 	io.Copy(out, reader)
+}
+
+func GetAllDataInCache(head *Block_Chain.DataNode, tail *Block_Chain.DataNode) []Block_Chain.DATA {
+	var data []Block_Chain.DATA
+
+	if head == nil {
+		return nil
+	}
+
+	for head != tail {
+		data = append(data, head.Data)
+		head = head.Next
+	}
+
+	return data
+}
+
+func HandleData(data []Block_Chain.DATA) {
+	mutex.Lock()
+
+	oldBlock := Block_Chain.GetPrevBlock()
+	log.Println(oldBlock)
+
+	newBlock := Block_Chain.GenerateBlock(oldBlock, data)
+	log.Println(newBlock)
+
+	File_Index.InsertBlock(&newBlock, tree)
+	Block_Chain.StoreBlock(newBlock)
+
+	BroadCastBlock(newBlock)
+
+	mutex.Unlock()
+}
+
+func BroadCastBlock(block Block_Chain.Block) {
+	blockInfo, _ := json.Marshal(&block)
+
+	for _, node := range nodeConfig.AddressBook {
+		reader := bytes.NewReader(blockInfo)
+		req, _ := http.NewRequest("GET", node+"/block", reader)
+		req.Header.Set("Content-Type", "application/json")
+		resp := Controller.SendRequest(req)
+		fmt.Println(resp.StatusCode)
+	}
 }
