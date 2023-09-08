@@ -5,11 +5,12 @@ import (
 	"math/big"
 )
 
-// calculate a*b^{-1} mod p
-func mulMod(prime *big.Int, number *big.Int, inverse *big.Int) {
-	inverse.ModInverse(inverse, prime)
-	number.Mul(number, inverse)
-	number.Mod(number, prime)
+func mulMod(p *big.Int, a *big.Int, b *big.Int) *big.Int {
+	divide := big.NewInt(0)
+	divide.ModInverse(b, p)
+	divide.Mul(a, divide)
+	divide.Mod(divide, p)
+	return divide
 }
 
 // restore message from ciphertext and choice (which slices to choose)
@@ -23,15 +24,21 @@ func restoreMsg(ciphertext []*big.Int, p big.Int, choice []int) []byte {
 		}
 		advance[i][4] = ciphertext[i]
 	}
+	fmt.Println("p:" + p.String())
 	for i := 1; i < 4; i++ {
-		divide := big.NewInt(0)
 		for j := i; j < 4; j++ {
-			divide.ModInverse(advance[i-1][i-1], &p)
-			divide.Mul(advance[j][i-1], divide)
+			//divide.ModInverse(advance[i-1][i-1], &p)
+			//fmt.Println("inverse:" + divide.String())
+			//divide.Mul(advance[j][i-1], divide)
+			//divide.Mod(divide, &p)
+			//fmt.Println("a*b^{-1}mod p:" + divide.String())
+
+			divide := mulMod(&p, advance[j][i-1], advance[i-1][i-1])
 			for k := 0; k < 5; k++ {
 				tempMul := big.NewInt(0)
 				tempMul.Mul(advance[i-1][k], divide)
 				advance[j][k].Sub(advance[j][k], tempMul)
+				advance[j][k].Mod(advance[j][k], &p)
 			}
 		}
 	}
@@ -39,17 +46,19 @@ func restoreMsg(ciphertext []*big.Int, p big.Int, choice []int) []byte {
 
 	for i := 3; i > 0; i-- {
 		prime := &p
-		mulMod(prime, advance[i][4], advance[i][i])
+		advance[i][4] = mulMod(prime, advance[i][4], advance[i][i])
 		//advance[i][4].Div(advance[i][4], advance[i][i])
 		advance[i][i] = big.NewInt(1)
 		for j := i - 1; j >= 0; j-- {
-			divide := big.NewInt(0)
-			divide.ModInverse(advance[i][i], &p)
-			divide.Mul(advance[j][i], divide)
+
+			//divide.ModInverse(advance[i][i], &p)
+			//divide.Mul(advance[j][i], divide)
+			divide := mulMod(&p, advance[j][i], advance[i][i])
 			for k := 0; k < 5; k++ {
 				tempMul := big.NewInt(0)
 				tempMul.Mul(advance[i][k], divide)
 				advance[j][k].Sub(advance[j][k], tempMul)
+				advance[j][k].Mod(advance[j][k], &p)
 			}
 		}
 	}
