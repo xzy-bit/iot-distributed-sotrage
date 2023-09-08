@@ -14,7 +14,9 @@ import (
 	"log"
 	"math/big"
 	"net/http"
+	"strconv"
 	"sync"
+	"time"
 )
 
 var head *Block_Chain.DataNode
@@ -94,10 +96,18 @@ func NodeGetToken() *gin.Engine {
 
 		// Generate block from cache
 		data := GetAllDataInCache(head, tail)
-		HandleData(data)
+		if data != nil {
+			log.Println("Handling data")
+			HandleData(data)
+		} else {
+			log.Println("Data is nil put token to the next node!")
+			time.Sleep(time.Second)
+		}
 
 		index := (nodeConfig.NodeId + 1) % 7
-		req, _ := http.NewRequest("GET", nodeConfig.AddressBook[index]+"/token", nil)
+		trueUrl := nodeConfig.AddressBook[index] + ":" + strconv.Itoa(nodeConfig.PortForToken+index)
+
+		req, _ := http.NewRequest("GET", trueUrl+"/token", nil)
 		Controller.SendRequest(req)
 
 		context.String(200, "Send token to next node")

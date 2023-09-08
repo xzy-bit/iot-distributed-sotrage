@@ -33,15 +33,6 @@ func ReceiveKeys() *gin.Engine {
 	return router
 }
 
-func Ping() *gin.Engine {
-	router := gin.Default()
-	router.GET("ping", func(context *gin.Context) {
-		context.String(200, "pong")
-
-	})
-	return router
-}
-
 func SignForRandom(url string) bool {
 	reqForChallenge, _ := http.NewRequest("GET", url+"/challenge", nil)
 	resp := Controller.SendRequest(reqForChallenge)

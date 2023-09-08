@@ -96,8 +96,11 @@ func BroadCastBlock(block Block_Chain.Block) {
 		if index == nodeConfig.NodeId {
 			continue
 		}
+		trueUrl := node + ":" + strconv.Itoa(nodeConfig.PortForBlock+index)
+
 		reader := bytes.NewReader(blockInfo)
-		req, _ := http.NewRequest("GET", node+"/block", reader)
+
+		req, _ := http.NewRequest("GET", trueUrl+"/block", reader)
 		req.Header.Set("Content-Type", "application/json")
 		Controller.SendRequest(req)
 	}
