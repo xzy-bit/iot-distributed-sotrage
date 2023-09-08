@@ -19,14 +19,15 @@ func restoreMsg(ciphertext []*big.Int, p big.Int, choice []int) []byte {
 	for i := 0; i < 4; i++ {
 		advance[i] = make([]*big.Int, 5)
 		for j := 0; j < 4; j++ {
-			advance[i][j] = matrix[i][j]
+			advance[i][j] = matrix[choice[i]][j]
 		}
-		advance[i][4] = ciphertext[choice[i]]
+		advance[i][4] = ciphertext[i]
 	}
 	for i := 1; i < 4; i++ {
 		divide := big.NewInt(0)
 		for j := i; j < 4; j++ {
-			divide.Div(advance[j][i-1], advance[i-1][i-1])
+			divide.ModInverse(advance[i-1][i-1], &p)
+			divide.Mul(advance[j][i-1], divide)
 			for k := 0; k < 5; k++ {
 				tempMul := big.NewInt(0)
 				tempMul.Mul(advance[i-1][k], divide)
@@ -43,7 +44,8 @@ func restoreMsg(ciphertext []*big.Int, p big.Int, choice []int) []byte {
 		advance[i][i] = big.NewInt(1)
 		for j := i - 1; j >= 0; j-- {
 			divide := big.NewInt(0)
-			divide.Div(advance[j][i], advance[i][i])
+			divide.ModInverse(advance[i][i], &p)
+			divide.Mul(advance[j][i], divide)
 			for k := 0; k < 5; k++ {
 				tempMul := big.NewInt(0)
 				tempMul.Mul(advance[i][k], divide)

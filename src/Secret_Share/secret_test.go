@@ -2,6 +2,7 @@ package Secret_Share
 
 import (
 	"fmt"
+	"math/big"
 	"testing"
 )
 
@@ -11,7 +12,13 @@ func TestSliceAndEncrypt(t *testing.T) {
 	matrix := MatrixInit()
 	ciphertext, p := SliceAndEncrypt(matrix, message)
 	//fmt.Println(ciphertext)
-	MsgBytes := restoreMsg(ciphertext, p, []int{0, 1, 2, 3})
+	cipher := []*big.Int{
+		ciphertext[0],
+		ciphertext[2],
+		ciphertext[3],
+		ciphertext[5],
+	}
+	MsgBytes := restoreMsg(cipher, p, []int{0, 2, 3, 5})
 	fmt.Println(string(MsgBytes))
 	if string(MsgBytes) != text {
 		t.Errorf("Slice and then restore failed\n")
