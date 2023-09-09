@@ -10,7 +10,7 @@ func QueryData(tree *avltree.Tree, deviceId string, startTime time.Time, endTime
 	if tree.Empty() {
 		return []Block_Chain.DATA{}
 	}
-	floor, found := tree.Floor(TreeKey{DeviceId: deviceId, TimeStamp: startTime, Serial: 1})
+	floor, found := tree.Floor(TreeKey{DeviceId: deviceId, TimeStamp: startTime, Serial: 0})
 	if !found {
 		floor = tree.Left()
 	}
@@ -20,7 +20,7 @@ func QueryData(tree *avltree.Tree, deviceId string, startTime time.Time, endTime
 	if floor == nil || floor.Key.(TreeKey).DeviceId != deviceId {
 		return []Block_Chain.DATA{}
 	}
-	ceiling, found := tree.Ceiling(TreeKey{DeviceId: deviceId, TimeStamp: startTime, Serial: 1})
+	ceiling, found := tree.Ceiling(TreeKey{DeviceId: deviceId, TimeStamp: endTime, Serial: 6})
 	if !found {
 		ceiling = tree.Right()
 	}

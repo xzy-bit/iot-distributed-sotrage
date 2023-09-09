@@ -4,7 +4,6 @@ import (
 	"IOT_Storage/src/Block_Chain"
 	"bufio"
 	"encoding/json"
-	"fmt"
 	"github.com/emirpasic/gods/trees/avltree"
 	"io"
 	"log"
@@ -26,10 +25,10 @@ func ComparatorForTreeKey(a, b interface{}) int {
 	s1 := strings.Compare(v1.DeviceId, v2.DeviceId)
 	if s1 == 0 {
 		// compare timestamp
-		if v1.TimeStamp.After(v2.TimeStamp) {
+		if v1.TimeStamp.Before(v2.TimeStamp) {
 			return -1
 		}
-		if v1.TimeStamp.Before(v2.TimeStamp) {
+		if v1.TimeStamp.After(v2.TimeStamp) {
 			return 1
 		}
 
@@ -80,7 +79,7 @@ func BuildTraverser(backupFilePath string) *avltree.Tree {
 }
 
 func InsertBlock(block *Block_Chain.Block, tree *avltree.Tree) {
-	fmt.Println(block.Data)
+	//fmt.Println(block.Data)
 	//tree := avltree.NewWithIntComparator()
 	for _, data := range block.Data {
 		if data.Hash == nil {

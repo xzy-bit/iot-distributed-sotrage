@@ -2,6 +2,7 @@ package User
 
 import (
 	"IOT_Storage/src/Controller"
+	"IOT_Storage/src/IOT_Device"
 	"IOT_Storage/src/Identity_Verify"
 	"IOT_Storage/src/Node"
 	"bytes"
@@ -11,6 +12,8 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"net/url"
+	"os"
 )
 
 func ReceiveKeys() *gin.Engine {
@@ -62,4 +65,20 @@ func SignForRandom(url string) bool {
 	}
 	fmt.Println(resp.StatusCode)
 	return true
+}
+
+func QueryData(node string, startTime string, endTime string) {
+	file, _ := os.Open("public.pem")
+	iotId := IOT_Device.GenerateIotId(file)
+	println(iotId)
+	file.Close()
+	body := url.Values{
+		"iotId":     {iotId},
+		"startTime": {startTime},
+		"endTime":   {endTime},
+	}
+	resp, _ := http.PostForm(node+"/query", body)
+	if resp.StatusCode != 200 {
+		log.Fatal("can not send data to nodes")
+	}
 }
