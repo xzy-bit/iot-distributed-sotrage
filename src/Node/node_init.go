@@ -1,26 +1,25 @@
 package Node
 
 import (
-	"IOT_Storage/src/Block_Chain"
-	"IOT_Storage/src/Controller"
+	"IOT_Storage/src/File_Index"
 	"encoding/json"
 	"github.com/emirpasic/gods/trees/avltree"
 	"log"
-	"net/http"
 	"os"
 	"strconv"
-	"time"
 )
 
 var tree *avltree.Tree
 var nodeConfig *Config
 
 type Config struct {
-	NodeId       int
-	AddressBook  []string
-	PortForPIng  int
-	PortForToken int
-	PortForBlock int
+	NodeId          int
+	AddressBook     []string
+	PortForPIng     int
+	PortForToken    int
+	PortForBlock    int
+	PortForGetSlice int
+	PortForQuery    int
 }
 
 func CreateConfig() {
@@ -29,6 +28,8 @@ func CreateConfig() {
 	config.PortForPIng = 8080
 	config.PortForToken = 7080
 	config.PortForBlock = 9080
+	config.PortForGetSlice = 10080
+	config.PortForQuery = 8000
 	address := []string{
 		"http://192.168.42.129",
 		"http://192.168.42.129",
@@ -59,65 +60,82 @@ func NodeInit() {
 
 	pingRouter := Ping()
 	go pingRouter.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForPIng))
-	//genius := Block_Chain.GeniusBlock()
+
+	tree = File_Index.BuildTraverser("backup.json")
 	//
-	//BroadCastBlock(*genius)
+	//pipe := make(chan string)
+	//var urlBooks []string
+	////tree := File_Index.BuildTraverser("backup.json")
+	//for index, nodeAddress := range nodeConfig.AddressBook {
+	//	nodeId := index
+	//	if nodeId == nodeConfig.NodeId {
+	//		continue
+	//	}
+	//	go func(nodeAddress string) {
+	//		trueUrl := nodeAddress + ":" + strconv.Itoa(nodeConfig.PortForPIng+nodeId)
+	//		req := Controller.CreatePingReq(trueUrl)
+	//		for {
+	//			resp := Controller.SendRequest(req)
+	//			if resp == nil {
+	//				log.Printf("Can not get connection with %s\n", trueUrl)
+	//				time.Sleep(time.Second)
+	//				pipe <- ""
+	//				continue
+	//			}
+	//			log.Printf("%s is alive\n", trueUrl)
+	//			pipe <- trueUrl
+	//			break
+	//		}
+	//	}(nodeAddress)
+	//}
+	//go func() {
+	//	for {
+	//		select {
+	//		case trueUrl := <-pipe:
+	//			if trueUrl == "" {
+	//				continue
+	//			} else {
+	//				urlBooks = append(urlBooks, trueUrl)
+	//			}
+	//		}
+	//		if len(urlBooks) == 6 {
+	//			if nodeConfig.NodeId == 0 {
 	//
-	//Block_Chain.StoreBlock(*genius)
+	//				if Block_Chain.GetPrevBlock() == nil {
+	//					genius := Block_Chain.GeniusBlock()
+	//					log.Println("genius block:")
+	//					log.Println(genius)
+	//
+	//					Block_Chain.StoreBlock(*genius)
+	//
+	//					File_Index.InsertBlock(genius, tree)
+	//					log.Println("tree:")
+	//					log.Println(tree)
+	//
+	//					BroadCastBlock(*genius)
+	//				}
+	//
+	//				index := (nodeConfig.NodeId + 1) % 7
+	//				trueUrl := nodeConfig.AddressBook[index] + ":" + strconv.Itoa(nodeConfig.PortForToken+index)
+	//				req, _ := http.NewRequest("GET", trueUrl+"/token", nil)
+	//				Controller.SendRequest(req)
+	//			}
+	//			break
+	//		}
+	//	}
+	//}()
 
-	pipe := make(chan string)
-	var urlBooks []string
-	//tree := File_Index.BuildTraverser("backup.json")
-	for index, nodeAddress := range nodeConfig.AddressBook {
-		nodeId := index
-		if nodeId == nodeConfig.NodeId {
-			continue
-		}
-		go func(nodeAddress string) {
-			trueUrl := nodeAddress + ":" + strconv.Itoa(nodeConfig.PortForPIng+nodeId)
-			req := Controller.CreatePingReq(trueUrl)
-			for {
-				resp := Controller.SendRequest(req)
-				if resp == nil {
-					log.Printf("Can not get connection with %s\n", trueUrl)
-					time.Sleep(time.Second)
-					pipe <- ""
-					continue
-				}
-				log.Printf("%s is alive\n", trueUrl)
-				pipe <- trueUrl
-				break
-			}
-		}(nodeAddress)
-	}
-	go func() {
-		for {
-			select {
-			case trueUrl := <-pipe:
-				if trueUrl == "" {
-					continue
-				} else {
-					urlBooks = append(urlBooks, trueUrl)
-				}
-			}
-			if len(urlBooks) == 6 {
-				if nodeConfig.NodeId == 0 {
-					genius := Block_Chain.GeniusBlock()
-					BroadCastBlock(*genius)
+	log.Println(tree)
 
-					index := (nodeConfig.NodeId + 1) % 7
-					trueUrl := nodeConfig.AddressBook[index] + ":" + strconv.Itoa(nodeConfig.PortForToken+index)
-					req, _ := http.NewRequest("GET", trueUrl+"/token", nil)
-					Controller.SendRequest(req)
-				}
-				break
-			}
-		}
-	}()
-
-	router := NodeGetBlock()
-	go router.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForBlock))
+	blockRouter := NodeGetBlock()
+	go blockRouter.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForBlock))
 
 	tokenRouter := NodeGetToken()
-	tokenRouter.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForToken))
+	go tokenRouter.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForToken))
+
+	getSliceRouter := NodeGetSlice()
+	go getSliceRouter.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForGetSlice))
+
+	queryIndex := NodeGetQuery()
+	queryIndex.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForQuery))
 }

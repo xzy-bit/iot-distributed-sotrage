@@ -1,10 +1,8 @@
 package Block_Chain
 
 import (
-	"bufio"
 	"encoding/json"
 	"fmt"
-	"io"
 	"os"
 	"testing"
 	"time"
@@ -14,17 +12,17 @@ import (
 func TestBlockGenerateAndStore(t *testing.T) {
 	blockchain := CreateBlockChain()
 	time.Sleep(time.Second)
-	file, _ := os.Open("data.txt")
-	reader := bufio.NewReader(file)
-	for {
-		currentLine, err := reader.ReadBytes('\n')
-		if err == io.EOF {
-			break
-		}
-		data := DATA{}
-		json.Unmarshal(currentLine, &data)
-		blockchain.AddBlock([]DATA{data})
-	}
+	//file, _ := os.Open("data.txt")
+	//reader := bufio.NewReader(file)
+	//for {
+	//	currentLine, err := reader.ReadBytes('\n')
+	//	if err == io.EOF {
+	//		break
+	//	}
+	//	data := DATA{}
+	//	json.Unmarshal(currentLine, &data)
+	//	blockchain.AddBlock([]DATA{data})
+	//}
 
 	for _, block := range blockchain.Blocks {
 		fmt.Printf("Time:%s\n", block.TimeStamp.String())
@@ -42,6 +40,11 @@ func TestBlockGenerateAndStore(t *testing.T) {
 		t.Errorf("Hash:%x\n", block.Hash)
 		t.Errorf("Read and reconstruct error!\n")
 	}
+}
+
+func TestGetPrevBlock(t *testing.T) {
+	block := GetPrevBlock()
+	fmt.Println(block)
 }
 
 func TestDataHash(t *testing.T) {

@@ -11,13 +11,12 @@ type DataNode struct {
 }
 
 type Block struct {
-	Index              int
-	TimeStamp          time.Time
-	Hash               []byte
-	PrevHash           []byte
-	BlockGenerator     int
-	NextBlockGenerator int
-	Data               []DATA
+	Index          int
+	TimeStamp      time.Time
+	Hash           []byte
+	PrevHash       []byte
+	BlockGenerator int
+	Data           []DATA
 }
 
 type BlockChain struct {

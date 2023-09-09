@@ -12,10 +12,11 @@ import (
 	"time"
 )
 
-func GetPrevBlock() Block {
+func GetPrevBlock() *Block {
 	file, err := os.Open("backup.json")
 	if err != nil {
-		log.Fatal("Open backup error!\n")
+		log.Println("Open backup error!")
+		return nil
 	}
 
 	reader := bufio.NewReader(file)
@@ -30,10 +31,11 @@ func GetPrevBlock() Block {
 	block := Block{}
 	err = json.Unmarshal(lastLine, &block)
 	if err != nil {
-		log.Fatal("Json to block error！\n")
+		log.Println("Json to block error！")
+		return nil
 	}
 	//fmt.Println(block)
-	return block
+	return &block
 }
 
 func StoreBlock(newBlock Block) {
@@ -51,7 +53,7 @@ func StoreBlock(newBlock Block) {
 }
 
 func GeniusBlock() *Block {
-	block := Block{0, time.Now().UTC(), nil, nil, -1, 1, nil}
+	block := Block{0, time.Now().UTC(), nil, nil, 0, nil}
 	return &block
 }
 

@@ -7,7 +7,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"io"
-	"log"
 	"math/big"
 	"net/http"
 	"os"
@@ -17,14 +16,15 @@ import (
 )
 
 // save the sclie and generate DATA struct
-func GenerateDATA(iotId string, serial string, address string, modNum string) *Block_Chain.DATA {
+func GenerateDATA(iotId string, serial string, address string, modNum string, timeStamp string) *Block_Chain.DATA {
 	num, _ := strconv.Atoi(serial)
 	mod := new(big.Int)
 	mod.SetString(modNum, 10)
 	//log.Println("modNum:" + mod.String())
+	stamp, _ := time.Parse("2006-01-02 15:04:05", timeStamp)
 	dataIndex := Block_Chain.DATA{
 		DeviceID:  iotId,
-		TimeStamp: time.Now().UTC(),
+		TimeStamp: stamp,
 		Serial:    num,
 		Hash:      nil,
 		StoreOn:   address,
@@ -34,18 +34,18 @@ func GenerateDATA(iotId string, serial string, address string, modNum string) *B
 	return &dataIndex
 }
 
-func AddDataToCache(head *Block_Chain.DataNode, tail *Block_Chain.DataNode, newData *Block_Chain.DATA) {
+func AddDataToCache(newData *Block_Chain.DATA) {
 	dataNode := Block_Chain.DataNode{
 		Data: *newData,
 		Next: nil,
 	}
-	if head == nil {
-		head = &dataNode
-		tail = head
+	if Head == nil {
+		Head = &dataNode
+		Tail = Head.Next
 		return
 	}
-	tail.Next = &dataNode
-	tail = tail.Next
+	Tail = &dataNode
+	Tail = Tail.Next
 	return
 }
 
@@ -57,31 +57,36 @@ func SaveSlice(cipher string, fileName string) {
 	io.Copy(out, reader)
 }
 
-func GetAllDataInCache(head *Block_Chain.DataNode, tail *Block_Chain.DataNode) []Block_Chain.DATA {
-	var data []Block_Chain.DATA
+func GetAllDataInCache() []Block_Chain.DATA {
+	data := []Block_Chain.DATA{}
 
-	if head == nil {
+	if Head == nil {
 		return nil
 	}
 
-	for head != tail {
-		data = append(data, head.Data)
-		head = head.Next
+	for Head != Tail {
+		data = append(data, Head.Data)
+		Head = Head.Next
 	}
 
 	return data
 }
 
-func HandleData(data []Block_Chain.DATA) {
+func HandleData(data []Block_Chain.DATA, generator int) {
 	mutex.Lock()
 
 	oldBlock := Block_Chain.GetPrevBlock()
-	log.Println(oldBlock)
+	//log.Println(oldBlock)
 
-	newBlock := Block_Chain.GenerateBlock(oldBlock, data)
-	log.Println(newBlock)
+	newBlock := Block_Chain.GenerateBlock(*oldBlock, data)
+	newBlock.BlockGenerator = generator
+	//log.Println("block:")
+	//log.Println(newBlock)
 
 	File_Index.InsertBlock(&newBlock, tree)
+
+	//log.Println("tree:")
+	//log.Println(tree)
 	Block_Chain.StoreBlock(newBlock)
 
 	BroadCastBlock(newBlock)
