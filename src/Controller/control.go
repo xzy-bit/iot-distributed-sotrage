@@ -61,9 +61,6 @@ func SendRequest(r *http.Request) *http.Response {
 
 		resp, err := client.Do(r)
 		respCh <- resp
-		if resp != nil {
-			defer resp.Body.Close()
-		}
 		if err != nil {
 			fmt.Println(err)
 		}

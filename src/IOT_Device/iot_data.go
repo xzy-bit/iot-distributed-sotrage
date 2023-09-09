@@ -13,16 +13,16 @@ import (
 )
 
 type Student struct {
-	name  string
-	age   int
-	stuId int
+	Name  string
+	Age   int
+	StuId int
 }
 
 func SendSliceToNode(nodes []string) {
 	stu := Student{
-		name:  "XiaoMing",
-		age:   18,
-		stuId: 1748526,
+		Name:  "XiaoGang",
+		Age:   14,
+		StuId: 12156,
 	}
 
 	stuInfo, _ := json.Marshal(stu)

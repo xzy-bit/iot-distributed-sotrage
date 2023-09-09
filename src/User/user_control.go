@@ -1,19 +1,26 @@
 package User
 
 import (
+	"IOT_Storage/src/Block_Chain"
 	"IOT_Storage/src/Controller"
 	"IOT_Storage/src/IOT_Device"
 	"IOT_Storage/src/Identity_Verify"
 	"IOT_Storage/src/Node"
+	"IOT_Storage/src/Secret_Share"
 	"bytes"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"io"
+	"io/ioutil"
 	"log"
+	"math/big"
 	"net/http"
 	"net/url"
 	"os"
+	"strconv"
+	"strings"
 )
 
 func ReceiveKeys() *gin.Engine {
@@ -67,11 +74,11 @@ func SignForRandom(url string) bool {
 	return true
 }
 
-func QueryData(node string, startTime string, endTime string) {
+func QueryData(node string, startTime string, endTime string, port int) {
 	file, _ := os.Open("public.pem")
 	iotId := IOT_Device.GenerateIotId(file)
 	println(iotId)
-	file.Close()
+	defer file.Close()
 	body := url.Values{
 		"iotId":     {iotId},
 		"startTime": {startTime},
@@ -80,5 +87,62 @@ func QueryData(node string, startTime string, endTime string) {
 	resp, _ := http.PostForm(node+"/query", body)
 	if resp.StatusCode != 200 {
 		log.Fatal("can not send data to nodes")
+	}
+	data, err := ioutil.ReadAll(resp.Body)
+	//resp.Body = ioutil.NopCloser(bytes.NewBuffer(data))
+	if err != nil {
+		log.Fatal("can not get the data")
+	}
+
+	var indexes []Block_Chain.DATA
+	json.Unmarshal(data, &indexes)
+
+	for i := 0; i < len(indexes); i += 7 {
+		count := 0
+		var cipher []*big.Int
+		var p big.Int
+		var choice []int
+		p = *indexes[i].ModNum
+		for j := 0; j < 7; j++ {
+			temp := strings.Split(indexes[i+j].StoreOn, ":")
+			trueUrl := temp[0] + ":" + temp[1] + ":" + strconv.Itoa(port+j) + "/userGetSlice"
+			slice := UserGetSlice(trueUrl, indexes[i+j].Hash)
+			//fmt.Println(slice)
+			if len(slice) == 0 {
+				fmt.Printf("Can not get slice from %s\n", trueUrl)
+			} else {
+				choice = append(choice, indexes[i+j].Serial)
+				num := big.NewInt(1)
+				num.SetString(string(slice), 10)
+				//fmt.Println(num)
+				cipher = append(cipher, num)
+				//cipher = append(cipher)
+				count++
+			}
+			if count == 4 {
+				msgBytes := Secret_Share.ResotreMsg(cipher, p, choice)
+				var stu IOT_Device.Student
+				json.Unmarshal(msgBytes, &stu)
+				fmt.Println(stu)
+				break
+			}
+		}
+	}
+	fmt.Println("End of data querying!")
+}
+
+func UserGetSlice(address string, hash []byte) []byte {
+
+	body := url.Values{
+		"filename": {hex.EncodeToString(hash)},
+	}
+	resp, _ := http.PostForm(address, body)
+	if resp.StatusCode == 200 {
+		data, _ := ioutil.ReadAll(resp.Body)
+		resp.Body.Close()
+		return data
+	} else {
+		log.Println("Can not get the file")
+		return []byte{}
 	}
 }

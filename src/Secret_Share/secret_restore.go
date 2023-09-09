@@ -14,7 +14,7 @@ func mulMod(p *big.Int, a *big.Int, b *big.Int) *big.Int {
 }
 
 // restore message from ciphertext and choice (which slices to choose)
-func restoreMsg(ciphertext []*big.Int, p big.Int, choice []int) []byte {
+func ResotreMsg(ciphertext []*big.Int, p big.Int, choice []int) []byte {
 	matrix := MatrixInit()
 	advance := make([][]*big.Int, 4)
 	for i := 0; i < 4; i++ {
@@ -24,7 +24,7 @@ func restoreMsg(ciphertext []*big.Int, p big.Int, choice []int) []byte {
 		}
 		advance[i][4] = ciphertext[i]
 	}
-	fmt.Println("p:" + p.String())
+	//fmt.Println("p:" + p.String())
 	for i := 1; i < 4; i++ {
 		for j := i; j < 4; j++ {
 			//divide.ModInverse(advance[i-1][i-1], &p)
@@ -42,7 +42,7 @@ func restoreMsg(ciphertext []*big.Int, p big.Int, choice []int) []byte {
 			}
 		}
 	}
-	fmt.Println(advance)
+	//fmt.Println(advance)
 
 	for i := 3; i > 0; i-- {
 		prime := &p
@@ -63,13 +63,13 @@ func restoreMsg(ciphertext []*big.Int, p big.Int, choice []int) []byte {
 		}
 	}
 
-	fmt.Println(advance)
+	//fmt.Println(advance)
 	var MsgBin string
 	for i := 0; i < 4; i++ {
 		binaryStr := fmt.Sprintf("%b", advance[i][4])
 		MsgBin += binaryStr[1:]
 	}
-	fmt.Println(MsgBin)
+	//fmt.Println(MsgBin)
 
 	MsgInt := big.NewInt(0)
 	MsgInt.SetString(MsgBin, 2)
