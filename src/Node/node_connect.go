@@ -5,6 +5,7 @@ import (
 	"IOT_Storage/src/Controller"
 	"IOT_Storage/src/File_Index"
 	"IOT_Storage/src/Identity_Verify"
+	"bufio"
 	"bytes"
 	"crypto/rand"
 	"encoding/hex"
@@ -14,6 +15,7 @@ import (
 	"log"
 	"math/big"
 	"net/http"
+	"os"
 	"strconv"
 	"sync"
 	"time"
@@ -93,10 +95,10 @@ func NodeGetSlice() *gin.Engine {
 		timeStamp := context.PostForm("timeStamp")
 
 		//log.Println(cipherStr)
-		log.Println(iotId)
-		log.Println(serialStr)
-		log.Println(address)
-		//log.Println(modNumStr)
+		//log.Println(iotId)
+		//log.Println(serialStr)
+		//log.Println(address)
+		log.Println(modNumStr)
 		//log.Println(timeStamp)
 
 		dataIndex := GenerateDATA(iotId, serialStr, address, modNumStr, timeStamp)
@@ -195,8 +197,39 @@ func NodeGetQuery() *gin.Engine {
 		end, _ := time.Parse("2006-01-02 15:04:05", endTIme)
 
 		indexes := File_Index.QueryData(tree, iotId, start, end)
-		log.Println(indexes)
-		context.String(200, "Get Indexes!")
+
+		body, err := json.Marshal(indexes)
+		if err != nil {
+			context.String(502, "Can not get slice")
+		} else {
+			context.Data(200, "application/json", body)
+		}
+	})
+	return router
+}
+
+func NodeSendSlice() *gin.Engine {
+	router := gin.Default()
+	router.POST("userGetSlice", func(context *gin.Context) {
+		filename := "./slices/" + context.PostForm("filename") + ".slc"
+		file, err := os.Open(filename)
+		defer file.Close()
+		stat, err := file.Stat()
+
+		if err != nil {
+			log.Println(err)
+			context.String(502, "Can not open file")
+		}
+		body := make([]byte, stat.Size())
+		_, err = bufio.NewReader(file).Read(body)
+
+		log.Println(body)
+		if err != nil {
+			log.Println(err)
+			context.String(502, "Can not read file")
+		} else {
+			context.Data(200, "text/plain", body)
+		}
 	})
 	return router
 }

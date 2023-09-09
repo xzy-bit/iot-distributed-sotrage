@@ -5,7 +5,6 @@ import (
 	"bufio"
 	"encoding/json"
 	"github.com/emirpasic/gods/trees/avltree"
-	"io"
 	"log"
 	"os"
 	"strings"
@@ -47,26 +46,26 @@ func ComparatorForTreeKey(a, b interface{}) int {
 func GetNextBlock(reader *bufio.Reader) *Block_Chain.Block {
 
 	currentLine, err := reader.ReadBytes('\n')
-	if err == io.EOF {
+	if err != nil {
+		log.Println(err)
 		return nil
 	}
 
 	block := Block_Chain.Block{}
 	err = json.Unmarshal(currentLine, &block)
 	if err != nil {
-		log.Fatal("Json to block error！\n")
+		log.Println("Json to block error！")
 	}
 	//fmt.Println(block)
 	return &block
 }
 func BuildTraverser(backupFilePath string) *avltree.Tree {
 	tree := avltree.NewWith(ComparatorForTreeKey)
-	var err error
 	file, err := os.OpenFile(backupFilePath, os.O_RDONLY, os.FileMode(0644))
 	if err != nil {
 		log.Print(err)
-		return nil
 	}
+	//log.Printf("1111")
 	reader := bufio.NewReader(file)
 	for {
 		block := GetNextBlock(reader)
