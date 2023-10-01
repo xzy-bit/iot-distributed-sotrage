@@ -20,9 +20,9 @@ type Student struct {
 
 func SendSliceToNode(nodes []string) {
 	stu := Student{
-		Name:  "XiaoGang",
-		Age:   14,
-		StuId: 12156,
+		Name:  "dwjklas",
+		Age:   34,
+		StuId: 3242,
 	}
 
 	stuInfo, _ := json.Marshal(stu)
