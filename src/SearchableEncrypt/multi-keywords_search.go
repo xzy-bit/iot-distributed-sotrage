@@ -3,33 +3,43 @@ package SearchableEncrypt
 import (
 	"bufio"
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"gonum.org/v1/gonum/mat"
 	"io"
 	"log"
 	"math/rand"
+	"net/http"
+	"net/url"
 	"os"
 	"strings"
+	"time"
 )
 
 type Document struct {
-	I11 *mat.VecDense
-	I12 *mat.VecDense
-	I21 *mat.VecDense
-	I22 *mat.VecDense
+	I11 mat.VecDense
+	I12 mat.VecDense
+	I21 mat.VecDense
+	I22 mat.VecDense
 }
 
 type QueryRequest struct {
-	T11 *mat.VecDense
-	T12 *mat.VecDense
-	T21 *mat.VecDense
-	T22 *mat.VecDense
+	T11 mat.VecDense
+	T12 mat.VecDense
+	T21 mat.VecDense
+	T22 mat.VecDense
 }
 
 type SecretKey struct {
-	M1 *mat.Dense
-	M2 *mat.Dense
-	S  *mat.VecDense
+	M1 mat.Dense
+	M2 mat.Dense
+	S  mat.VecDense
+}
+
+type SecretKeyBinary struct {
+	M1 []byte
+	M2 []byte
+	S  []byte
 }
 
 func MatrixPrint(m mat.Matrix) {
@@ -79,9 +89,9 @@ func SetUp(n int) *SecretKey {
 	m1 := GenerateInvertibleMatrix(n + 2)
 	m2 := GenerateInvertibleMatrix(n + 2)
 	s := GenerateVector(n + 2)
-	sk.M1 = m1
-	sk.M2 = m2
-	sk.S = s
+	sk.M1 = *m1
+	sk.M2 = *m2
+	sk.S = *s
 	return &sk
 }
 
@@ -204,19 +214,19 @@ func BuildIndex(documentKeyWords []string, sk *SecretKey) *Document {
 	//println("docVec")
 	//MatrixPrint(docVec)
 
-	p1, p2 := splitVec(docVec, sk.S, 0)
-	p11, p12 := splitVec(p1, sk.S, 0)
-	p21, p22 := splitVec(p2, sk.S, 0)
+	p1, p2 := splitVec(docVec, &sk.S, 0)
+	p11, p12 := splitVec(p1, &sk.S, 0)
+	p21, p22 := splitVec(p2, &sk.S, 0)
 
 	i11.MulVec(sk.M1.T(), p11)
 	i12.MulVec(sk.M2.T(), p12)
 	i21.MulVec(sk.M1.T(), p21)
 	i22.MulVec(sk.M2.T(), p22)
 
-	document.I11 = &i11
-	document.I12 = &i12
-	document.I21 = &i21
-	document.I22 = &i22
+	document.I11 = i11
+	document.I12 = i12
+	document.I21 = i21
+	document.I22 = i22
 
 	return &document
 }
@@ -234,22 +244,22 @@ func Trapdoor(queryKeywords []string, sk *SecretKey) *QueryRequest {
 	//println("qryVec")
 	//MatrixPrint(qryVec)
 
-	q1, q2 := splitVec(qryVec, sk.S, 1)
-	q11, q12 := splitVec(q1, sk.S, 1)
-	q21, q22 := splitVec(q2, sk.S, 1)
+	q1, q2 := splitVec(qryVec, &sk.S, 1)
+	q11, q12 := splitVec(q1, &sk.S, 1)
+	q21, q22 := splitVec(q2, &sk.S, 1)
 
-	M1_Inverse.Inverse(sk.M1)
-	M2_Inverse.Inverse(sk.M2)
+	M1_Inverse.Inverse(&sk.M1)
+	M2_Inverse.Inverse(&sk.M2)
 
 	t11.MulVec(&M1_Inverse, q11)
 	t12.MulVec(&M2_Inverse, q12)
 	t21.MulVec(&M1_Inverse, q21)
 	t22.MulVec(&M2_Inverse, q22)
 
-	query.T11 = &t11
-	query.T12 = &t12
-	query.T21 = &t21
-	query.T22 = &t22
+	query.T11 = t11
+	query.T12 = t12
+	query.T21 = t21
+	query.T22 = t22
 	return &query
 }
 
@@ -260,10 +270,10 @@ func Query(doc *Document, query *QueryRequest) float64 {
 	var result4 mat.VecDense
 	//var result mat.VecDense
 
-	result1.MulVec(query.T11.T(), doc.I11)
-	result2.MulVec(query.T12.T(), doc.I12)
-	result3.MulVec(query.T21.T(), doc.I21)
-	result4.MulVec(query.T22.T(), doc.I22)
+	result1.MulVec(query.T11.T(), &doc.I11)
+	result2.MulVec(query.T12.T(), &doc.I12)
+	result3.MulVec(query.T21.T(), &doc.I21)
+	result4.MulVec(query.T22.T(), &doc.I22)
 
 	return result1.At(0, 0) + result2.At(0, 0) + result3.At(0, 0) + result4.At(0, 0)
 }
@@ -277,4 +287,99 @@ func QueryForUser(subKey []string, documents []Document, sk *SecretKey) []float6
 	}
 
 	return results
+}
+
+func GenerateSk() {
+	var sk *SecretKey
+	var sk_binary SecretKeyBinary
+	keywords := ReadKeyWords()
+	sk = SetUp(len(keywords))
+
+	m1info, _ := sk.M1.MarshalBinary()
+	m2info, _ := sk.M1.MarshalBinary()
+	sinfo, _ := sk.S.MarshalBinary()
+
+	sk_binary.M1 = m1info
+	sk_binary.M2 = m2info
+	sk_binary.S = sinfo
+
+	skInfo, _ := json.Marshal(sk_binary)
+	file, err := os.OpenFile("user.sk", os.O_CREATE, 0644)
+	if err != nil {
+		log.Fatal(err)
+	}
+	data := bytes.NewBuffer(skInfo)
+	file.Write(data.Bytes())
+	file.Close()
+}
+
+func ReadSk() *SecretKey {
+	data, err := os.ReadFile("user.sk")
+	if err != nil {
+		panic(err)
+		log.Fatal("Read sk error!")
+	}
+	sk_binary := new(SecretKeyBinary)
+	json.Unmarshal(data, sk_binary)
+
+	sk := new(SecretKey)
+
+	sk.M1.UnmarshalBinary(sk_binary.M1)
+	sk.M2.UnmarshalBinary(sk_binary.M2)
+	sk.S.UnmarshalBinary(sk_binary.S)
+
+	return sk
+}
+
+func SendIndex(nodes []string, dVector []string, iotId string, timeStamp time.Time) {
+	var indexes [4][]byte
+	sk := ReadSk()
+
+	docInx := BuildIndex(dVector, sk)
+
+	I11, _ := docInx.I11.MarshalBinary()
+	I12, _ := docInx.I12.MarshalBinary()
+	I21, _ := docInx.I21.MarshalBinary()
+	I22, _ := docInx.I22.MarshalBinary()
+
+	indexes[0] = I11
+	indexes[1] = I12
+	indexes[2] = I21
+	indexes[3] = I22
+
+	//fmt.Println(timeStamp.Format("2006-01-02 15:04:05"))
+	for index, node := range nodes {
+		body := url.Values{
+			"vector":    {string(indexes[index])},
+			"iotId":     {iotId},
+			"address":   {node},
+			"timeStamp": {timeStamp.Format("2006-01-02 15:04:05")},
+		}
+		resp, _ := http.PostForm(node+"/getIndex", body)
+		if resp.StatusCode != 200 {
+			log.Fatal("can not send data to nodes")
+		}
+	}
+}
+
+func SendQuery(queryKeyWords []string) {
+	sk := ReadSk()
+	queryInx := Trapdoor(queryKeyWords, sk)
+	node := "http://192.168.42.129"
+
+	T11, _ := queryInx.T11.MarshalBinary()
+	T12, _ := queryInx.T12.MarshalBinary()
+	T21, _ := queryInx.T21.MarshalBinary()
+	T22, _ := queryInx.T22.MarshalBinary()
+
+	body := url.Values{
+		"t11": {string(T11)},
+		"t12": {string(T12)},
+		"t21": {string(T21)},
+		"t22": {string(T22)},
+	}
+	resp, _ := http.PostForm(node+"/queryByKeyWords", body)
+	if resp.StatusCode != 200 {
+		log.Fatal("can not send data to nodes")
+	}
 }

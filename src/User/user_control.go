@@ -121,9 +121,9 @@ func QueryData(node string, startTime string, endTime string, port int) {
 			}
 			if count == 4 {
 				msgBytes := Secret_Share.ResotreMsg(cipher, p, choice)
-				var stu IOT_Device.Student
-				json.Unmarshal(msgBytes, &stu)
-				fmt.Println(stu)
+				var patient IOT_Device.Patient
+				json.Unmarshal(msgBytes, &patient)
+				fmt.Println(patient)
 				break
 			}
 		}
@@ -145,4 +145,8 @@ func UserGetSlice(address string, hash []byte) []byte {
 		log.Println("Can not get the file")
 		return []byte{}
 	}
+}
+
+func UserQueryKeyWords(queryVector []string) {
+
 }

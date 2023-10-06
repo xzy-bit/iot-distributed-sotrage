@@ -29,9 +29,9 @@ func TestGenerateInvertibleMatrix(t *testing.T) {
 
 func TestSetUp(t *testing.T) {
 	sk := SetUp(10)
-	MatrixPrint(sk.M1)
-	MatrixPrint(sk.M2)
-	MatrixPrint(sk.S)
+	MatrixPrint(&sk.M1)
+	MatrixPrint(&sk.M2)
+	MatrixPrint(&sk.S)
 }
 
 //func TestAddKeyWords(t *testing.T) {
@@ -57,6 +57,7 @@ func TestQuery(t *testing.T) {
 	keywords := ReadKeyWords()
 	sk = SetUp(len(keywords))
 
+	//sk = ReadSk()
 	document1 := []string{
 		"肿瘤科",
 		"四肢乏力",
@@ -91,4 +92,10 @@ func TestQuery(t *testing.T) {
 		result_q2 := QueryForUser(query2, documents, sk)
 		println(result_q2[0] < result_q2[1])
 	}
+}
+
+func TestGenerateSk(t *testing.T) {
+	//GenerateSk()
+	sk := ReadSk()
+	MatrixPrint(&sk.M1)
 }
