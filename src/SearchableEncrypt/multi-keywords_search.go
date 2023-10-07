@@ -42,6 +42,12 @@ type SecretKeyBinary struct {
 	S  []byte
 }
 
+type DocumentRank struct {
+	UserID    string
+	TimeStamp time.Time
+	Score     float64
+}
+
 func MatrixPrint(m mat.Matrix) {
 	formattedMatrix := mat.Formatted(m, mat.Prefix(""), mat.Squeeze())
 	fmt.Printf("%v\n", formattedMatrix)

@@ -18,18 +18,18 @@ var nodeConfig *Config
 var table []SearchIndex
 
 type Config struct {
-	NodeId                 int
-	AddressBook            []string
-	PortForPIng            int
-	PortForToken           int
-	PortForBlock           int
-	PortForIndex           int
-	PortForGetSlice        int
-	PortForQuery           int
-	PortForSendSlice       int
-	PortForSendIndex       int
-	PortForGetIndex        int
-	PortForQueryByKeyWords int
+	NodeId                  int
+	AddressBook             []string
+	PortForPIng             int
+	PortForToken            int
+	PortForBlock            int
+	PortForIndexBroad       int
+	PortForGetSlice         int
+	PortForQuery            int
+	PortForSendSlice        int
+	PortForSendIndex        int
+	PortForGetIndexFromUser int
+	PortForQueryByKeyWords  int
 }
 
 func CreateConfig() {
@@ -38,13 +38,13 @@ func CreateConfig() {
 	config.PortForPIng = 8080
 	config.PortForToken = 7080
 	config.PortForBlock = 9080
-	config.PortForIndex = 9040
+	config.PortForIndexBroad = 8060
 	config.PortForGetSlice = 10080
 	config.PortForQuery = 8000
 	config.PortForSendSlice = 9000
 	config.PortForSendIndex = 9060
-	config.PortForGetIndex = 9020
-	config.PortForQueryByKeyWords = 9080
+	config.PortForGetIndexFromUser = 8040
+	config.PortForQueryByKeyWords = 8020
 
 	address := []string{
 		"http://192.168.42.129",
@@ -147,8 +147,8 @@ func NodeInit() {
 	blockRouter := NodeGetBlock()
 	go blockRouter.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForBlock))
 
-	indexRouter := NodeForIndexBroad()
-	go indexRouter.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForIndex))
+	indexBroadRouter := NodeForIndexBroad()
+	go indexBroadRouter.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForIndexBroad))
 
 	tokenRouter := NodeGetToken()
 	go tokenRouter.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForToken))
@@ -159,9 +159,15 @@ func NodeInit() {
 	queryIndex := NodeGetQuery()
 	go queryIndex.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForQuery))
 
+	getIndex := NodeGetIndex()
+	go getIndex.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForGetIndexFromUser))
+
 	sendSlice := NodeSendSlice()
 	go sendSlice.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForSendSlice))
 
-	getIndex := NodeGetIndex()
-	getIndex.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForGetIndex))
+	sendIndex := NodeSendIndex()
+	go sendIndex.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForSendIndex))
+
+	queryByKeyWord := NodeForKeyWordsQuery()
+	queryByKeyWord.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForQueryByKeyWords))
 }
