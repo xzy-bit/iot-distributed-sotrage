@@ -1,6 +1,9 @@
 package main
 
-import "IOT_Storage/src/User"
+import (
+	"IOT_Storage/src/User"
+	"fmt"
+)
 
 func main() {
 	//iot device process
@@ -9,16 +12,20 @@ func main() {
 	//	Identity_Verify.GenerateKey(false)
 	//}
 	//IOT_Device.IotInit()
+
+	//send slice and index
 	//nodes := []string{
-	//	"http://192.168.42.129:10080",
-	//	"http://192.168.42.129:10081",
-	//	"http://192.168.42.129:10082",
-	//	"http://192.168.42.129:10083",
-	//	"http://192.168.42.129:10084",
-	//	"http://192.168.42.129:10085",
-	//	"http://192.168.42.129:10086",
+	//	"http://192.168.42.129",
+	//	"http://192.168.42.129",
+	//	"http://192.168.42.129",
+	//	"http://192.168.42.129",
+	//	"http://192.168.42.129",
+	//	"http://192.168.42.129",
+	//	"http://192.168.42.129",
 	//}
-	//IOT_Device.SendSliceToNode(nodes)
+	//portForSlice := 10080
+	//portForIndex := 8040
+	//IOT_Device.SendSliceAndIndexToNode(nodes, portForSlice, portForIndex)
 
 	//node process
 	//router := Node.Ping()
@@ -39,9 +46,27 @@ func main() {
 	//User.SignForRandom("http://192.168.42.129:8081")
 	//P2P_Net.P2pPing()
 
-	portForSendSlice := 9000
-	nodeToQuery := "http://192.168.42.129:8000"
-	startTime := "2023-09-09 19:36:30"
-	endTime := "2023-09-09 19:38:00"
-	User.QueryData(nodeToQuery, startTime, endTime, portForSendSlice)
+	//SearchableEncrypt.GenerateSk()
+
+	query := []string{
+		"精神科",
+		"食欲不振",
+		"记忆力衰退",
+	}
+
+	queryCompare := []string{
+		"精神科",
+		"心律不齐",
+		"记忆力衰退",
+	}
+
+	User.QueryByKeyWords(query)
+	fmt.Println()
+	User.QueryByKeyWords(queryCompare)
+
+	//portForSendSlice := 9000
+	//nodeToQuery := "http://192.168.42.129:8000"
+	//startTime := "2023-10-07 15:25:10"
+	//endTime := "2023-10-07 15:25:10"
+	//User.QueryData(nodeToQuery, startTime, endTime, portForSendSlice)
 }

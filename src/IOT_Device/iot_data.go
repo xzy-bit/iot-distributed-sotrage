@@ -29,17 +29,22 @@ func SendSliceAndIndexToNode(nodes []string, portForSlice int, portForIndex int)
 		indexNode[i] = nodes[i] + ":" + strconv.Itoa(i+portForIndex)
 	}
 
-	document := []string{
-		"肿瘤科",
-		"四肢乏力",
+	//document := []string{
+	//	"精神科",
+	//	"食欲不振",
+	//	"记忆力衰退",
+	//}
+	documentCompare := []string{
+		"精神科",
+		"心律不齐",
 		"记忆力衰退",
 	}
 
 	patient := Patient{
-		Name:      "Xijishi",
-		Age:       45,
-		PatientId: 0,
-		KeyWords:  document,
+		Name:      "SiYi",
+		Age:       60,
+		PatientId: 3115,
+		KeyWords:  documentCompare,
 	}
 
 	patientInfo, _ := json.Marshal(patient)
