@@ -9,6 +9,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -41,8 +42,10 @@ func ReadIndexes() {
 	}
 	reader := bufio.NewReader(file)
 	for {
-		currentLine, _ := reader.ReadBytes('\n')
-
+		currentLine, fileErr := reader.ReadBytes('\n')
+		if fileErr == io.EOF {
+			break
+		}
 		index := SearchIndex{}
 		json.Unmarshal(currentLine, &index)
 		table = append(table, index)
@@ -57,7 +60,7 @@ func BroadcastIndex(Index SearchIndex) {
 		if index == nodeConfig.NodeId {
 			continue
 		}
-		trueUrl := node + ":" + strconv.Itoa(nodeConfig.PortForIndex+index)
+		trueUrl := node + ":" + strconv.Itoa(nodeConfig.PortForIndexBroad+index)
 
 		reader := bytes.NewReader(indexInfo)
 
@@ -142,20 +145,21 @@ func NodeSendIndex() *gin.Engine {
 		file, err := os.Open(filename)
 		defer file.Close()
 		stat, err := file.Stat()
+
 		if err != nil {
 			log.Println(err)
 			context.String(502, "Can not open file")
 		}
 		body := make([]byte, stat.Size())
 		_, err = bufio.NewReader(file).Read(body)
-		//log.Println(body)
+
+		log.Println(body)
 		if err != nil {
 			log.Println(err)
 			context.String(502, "Can not read file")
 		} else {
 			context.Data(200, "text/plain", body)
 		}
-
 	})
 	return router
 }
@@ -164,7 +168,8 @@ func NodeForKeyWordsQuery() *gin.Engine {
 	router := gin.Default()
 	router.POST("queryByKeyWords", func(context *gin.Context) {
 		var query SearchableEncrypt.QueryRequest
-		var document SearchableEncrypt.Document
+		var documnetScores []SearchableEncrypt.DocumentRank
+
 		t11 := context.PostForm("t11")
 		t12 := context.PostForm("t12")
 		t21 := context.PostForm("t21")
@@ -178,28 +183,33 @@ func NodeForKeyWordsQuery() *gin.Engine {
 
 		nodes := nodeConfig.AddressBook[:4]
 		for i := 0; i < len(table); i += 4 {
+			var document SearchableEncrypt.Document
 			for j := 0; j < 4; j++ {
+				var data []byte
 				temp := table[i+j]
 				fileName := GenerateFileName(temp)
+				if j == 0 {
+					data, _ = os.ReadFile("./indexes/" + fileName + ".idx")
+					document.I11.UnmarshalBinary(data)
+					continue
+				}
 
 				trueUrl := nodes[j] + ":" + strconv.Itoa(nodeConfig.PortForSendIndex+j)
 
 				body := url.Values{
-					"fileName": {fileName},
+					"filename": {fileName},
 				}
 				resp, _ := http.PostForm(trueUrl+"/nodeQueryIndex", body)
 
 				if resp.StatusCode != 200 {
-					log.Fatal("can not send data to nodes")
+					log.Println("can not send data to nodes")
 				}
 				data, err := ioutil.ReadAll(resp.Body)
 				//resp.Body = ioutil.NopCloser(bytes.NewBuffer(data))
 				if err != nil {
-					log.Fatal("can not get the data")
+					log.Println("can not get the data")
 				}
-				if j == 0 {
-					document.I11.UnmarshalBinary(data)
-				} else if j == 1 {
+				if j == 1 {
 					document.I12.UnmarshalBinary(data)
 				} else if j == 2 {
 					document.I21.UnmarshalBinary(data)
@@ -208,12 +218,23 @@ func NodeForKeyWordsQuery() *gin.Engine {
 				}
 			}
 			result := SearchableEncrypt.Query(&document, &query)
+			rank := SearchableEncrypt.DocumentRank{
+				UserID:    table[i].PatientId,
+				TimeStamp: table[i].TimeStamp,
+				Score:     result,
+			}
+			documnetScores = append(documnetScores, rank)
+			log.Println("table hash:", table[i].PatientId)
+			log.Println("time stamp:", table[i].TimeStamp)
 			log.Println("query score:", result)
 		}
 
-		//context.SaveUploadedFile()
-
-		context.String(200, "Get index")
+		body, err := json.Marshal(documnetScores)
+		if err != nil {
+			context.String(502, "Can not get indexes")
+		} else {
+			context.Data(200, "application/json", body)
+		}
 	})
 	return router
 }
