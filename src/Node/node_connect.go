@@ -185,9 +185,9 @@ func NodeGetBlock() *gin.Engine {
 	return router
 }
 
-func NodeGetQuery() *gin.Engine {
-	router := gin.Default()
-	router.POST("query", func(context *gin.Context) {
+func NodeGetQuery(rg *gin.RouterGroup) {
+	router := rg.Group("/query")
+	router.POST("/", func(context *gin.Context) {
 		log.Println("Receive query request")
 		iotId := context.PostForm("iotId")
 		startTime := context.PostForm("startTime")
@@ -205,7 +205,6 @@ func NodeGetQuery() *gin.Engine {
 			context.Data(200, "application/json", body)
 		}
 	})
-	return router
 }
 
 func NodeSendSlice() *gin.Engine {

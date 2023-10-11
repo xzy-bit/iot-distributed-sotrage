@@ -14,7 +14,7 @@ func GenerateIotId(file *os.File) (id string) {
 	h := sha3.NewLegacyKeccak256()
 	_, err := io.Copy(h, file)
 	if err == nil {
-		fmt.Println("Generating userId from public key...")
+		//fmt.Println("Generating userId from public key...")
 		hash := h.Sum(nil)
 		return hex.EncodeToString(hash[12:])
 	} else {

@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"gonum.org/v1/gonum/mat"
 	"io"
+	"io/ioutil"
 	"log"
 	"math/rand"
 	"net/http"
@@ -47,6 +48,8 @@ type DocumentRank struct {
 	TimeStamp time.Time
 	Score     float64
 }
+
+type DocumentScores []DocumentRank
 
 func MatrixPrint(m mat.Matrix) {
 	formattedMatrix := mat.Formatted(m, mat.Prefix(""), mat.Squeeze())
@@ -337,11 +340,11 @@ func ReadSk() *SecretKey {
 	return sk
 }
 
-func SendIndex(nodes []string, dVector []string, iotId string, timeStamp time.Time) {
+func SendIndex(nodes []string, document []string, iotId string, timeStamp time.Time) {
 	var indexes [4][]byte
 	sk := ReadSk()
 
-	docInx := BuildIndex(dVector, sk)
+	docInx := BuildIndex(document, sk)
 
 	I11, _ := docInx.I11.MarshalBinary()
 	I12, _ := docInx.I12.MarshalBinary()
@@ -363,15 +366,15 @@ func SendIndex(nodes []string, dVector []string, iotId string, timeStamp time.Ti
 		}
 		resp, _ := http.PostForm(node+"/getIndex", body)
 		if resp.StatusCode != 200 {
-			log.Fatal("can not send data to nodes")
+			log.Fatal("can not send indexes to nodes")
 		}
 	}
 }
 
-func SendQuery(queryKeyWords []string) {
+func QueryByKeyWords(queryKeyWords []string) []DocumentRank {
 	sk := ReadSk()
 	queryInx := Trapdoor(queryKeyWords, sk)
-	node := "http://192.168.42.129"
+	node := "http://192.168.42.129:8020"
 
 	T11, _ := queryInx.T11.MarshalBinary()
 	T12, _ := queryInx.T12.MarshalBinary()
@@ -388,4 +391,26 @@ func SendQuery(queryKeyWords []string) {
 	if resp.StatusCode != 200 {
 		log.Fatal("can not send data to nodes")
 	}
+
+	data, err := ioutil.ReadAll(resp.Body)
+	//resp.Body = ioutil.NopCloser(bytes.NewBuffer(data))
+	if err != nil {
+		log.Fatal("can not get the data")
+	}
+
+	var documentScores []DocumentRank
+	json.Unmarshal(data, &documentScores)
+	return documentScores
+}
+
+func (d DocumentScores) Len() int {
+	return len(d)
+}
+
+func (d DocumentScores) Swap(i, j int) {
+	d[i], d[j] = d[j], d[i]
+}
+
+func (d DocumentScores) Less(i, j int) bool {
+	return d[i].Score > d[j].Score
 }

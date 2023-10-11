@@ -6,6 +6,7 @@ import (
 	"IOT_Storage/src/IOT_Device"
 	"IOT_Storage/src/Identity_Verify"
 	"IOT_Storage/src/Node"
+	"IOT_Storage/src/SearchableEncrypt"
 	"IOT_Storage/src/Secret_Share"
 	"bytes"
 	"encoding/hex"
@@ -19,6 +20,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -77,7 +79,7 @@ func SignForRandom(url string) bool {
 func QueryData(node string, startTime string, endTime string, port int) {
 	file, _ := os.Open("public.pem")
 	iotId := IOT_Device.GenerateIotId(file)
-	println(iotId)
+	//println(iotId)
 	defer file.Close()
 	body := url.Values{
 		"iotId":     {iotId},
@@ -147,6 +149,23 @@ func UserGetSlice(address string, hash []byte) []byte {
 	}
 }
 
-func UserQueryKeyWords(queryVector []string) {
+func QueryDocumentRank(scores []SearchableEncrypt.DocumentRank) {
+	sort.Sort(SearchableEncrypt.DocumentScores(scores))
+	for index, document := range scores {
+		if index == 3 {
+			break
+		}
+		portForSendSlice := 9000
+		nodeToQuery := "http://192.168.42.129:8000"
+		startTime := document.TimeStamp.Format("2006-01-02 15:04:05")
+		endTime := document.TimeStamp.Format("2006-01-02 15:04:05")
+		fmt.Println("document score:", document.Score)
+		QueryData(nodeToQuery, startTime, endTime, portForSendSlice)
+	}
+}
 
+func QueryByKeyWords(query []string) {
+	fmt.Println("query key words:", query)
+	documentScores := SearchableEncrypt.QueryByKeyWords(query)
+	QueryDocumentRank(documentScores)
 }

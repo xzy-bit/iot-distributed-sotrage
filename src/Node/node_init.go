@@ -6,6 +6,7 @@ import (
 	"IOT_Storage/src/File_Index"
 	"encoding/json"
 	"github.com/emirpasic/gods/trees/avltree"
+	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
 	"os"
@@ -30,6 +31,7 @@ type Config struct {
 	PortForSendIndex        int
 	PortForGetIndexFromUser int
 	PortForQueryByKeyWords  int
+	PortIndexPageForUser    int
 }
 
 func CreateConfig() {
@@ -45,6 +47,7 @@ func CreateConfig() {
 	config.PortForSendIndex = 9060
 	config.PortForGetIndexFromUser = 8040
 	config.PortForQueryByKeyWords = 8020
+	config.PortIndexPageForUser = 10000
 
 	address := []string{
 		"http://192.168.42.129",
@@ -156,9 +159,6 @@ func NodeInit() {
 	getSliceRouter := NodeGetSlice()
 	go getSliceRouter.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForGetSlice))
 
-	queryIndex := NodeGetQuery()
-	go queryIndex.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForQuery))
-
 	getIndex := NodeGetIndex()
 	go getIndex.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForGetIndexFromUser))
 
@@ -169,5 +169,19 @@ func NodeInit() {
 	go sendIndex.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForSendIndex))
 
 	queryByKeyWord := NodeForKeyWordsQuery()
-	queryByKeyWord.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForQueryByKeyWords))
+	go queryByKeyWord.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForQueryByKeyWords))
+
+	router := gin.Default()
+	router.LoadHTMLGlob("templates/*")
+	v1 := router.Group("")
+	NodeGetQuery(v1)
+	NodeIndexPageForUser(v1)
+	router.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForQuery))
+
+	//queryIndex := NodeGetQuery()
+	//go queryIndex.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForQuery))
+	//
+	//indexPage := NodeIndexPageForUser()
+	//indexPage.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortIndexPageForUser))
+
 }
