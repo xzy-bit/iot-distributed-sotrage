@@ -79,7 +79,7 @@ func SignForRandom(url string) bool {
 func QueryData(node string, startTime string, endTime string, port int) {
 	file, _ := os.Open("public.pem")
 	iotId := IOT_Device.GenerateIotId(file)
-	//println(iotId)
+	println(iotId)
 	defer file.Close()
 	body := url.Values{
 		"iotId":     {iotId},

@@ -34,17 +34,28 @@ func SendSliceAndIndexToNode(nodes []string, portForSlice int, portForIndex int)
 	//	"食欲不振",
 	//	"记忆力衰退",
 	//}
-	documentCompare := []string{
-		"精神科",
+	//documentCompare := []string{
+	//	"精神科",
+	//	"心律不齐",
+	//	"记忆力衰退",
+	//}
+
+	//document1 := []string{
+	//	"胃科",
+	//	"食欲不振",
+	//	"四肢乏力",
+	//}
+	document1Compare := []string{
+		"胃科",
 		"心律不齐",
-		"记忆力衰退",
+		"食欲不振",
 	}
 
 	patient := Patient{
-		Name:      "SiYi",
-		Age:       60,
-		PatientId: 3115,
-		KeyWords:  documentCompare,
+		Name:      "QIAN",
+		Age:       20,
+		PatientId: 1002,
+		KeyWords:  document1Compare,
 	}
 
 	patientInfo, _ := json.Marshal(patient)

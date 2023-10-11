@@ -1,6 +1,8 @@
 package main
 
-import "IOT_Storage/src/User"
+import (
+	"IOT_Storage/src/User"
+)
 
 func main() {
 	//iot device process
@@ -10,15 +12,17 @@ func main() {
 	//}
 	//IOT_Device.IotInit()
 	//nodes := []string{
-	//	"http://192.168.42.129:10080",
-	//	"http://192.168.42.129:10081",
-	//	"http://192.168.42.129:10082",
-	//	"http://192.168.42.129:10083",
-	//	"http://192.168.42.129:10084",
-	//	"http://192.168.42.129:10085",
-	//	"http://192.168.42.129:10086",
+	//	"http://192.168.42.129",
+	//	"http://192.168.42.129",
+	//	"http://192.168.42.129",
+	//	"http://192.168.42.129",
+	//	"http://192.168.42.129",
+	//	"http://192.168.42.129",
+	//	"http://192.168.42.129",
 	//}
-	//IOT_Device.SendSliceToNode(nodes)
+	//portForSlice := 10080
+	//portForIndex := 8040
+	//IOT_Device.SendSliceAndIndexToNode(nodes, portForSlice, portForIndex)
 
 	//node process
 	//router := Node.Ping()
@@ -30,7 +34,7 @@ func main() {
 	//routerChallenge.Run(":8081")
 	//routerGetSlice := Node.ServerGetSlice()
 	//routerGetSlice.Run(":8081")
-	
+
 	//user process
 	//userIsAlive := User.Ping()
 	//go userIsAlive.Run(":8080")
@@ -38,7 +42,7 @@ func main() {
 	//userReceiveKeys.Run(":8090")
 	//User.SignForRandom("http://192.168.42.129:8081")
 	//P2P_Net.P2pPing()
-		//SearchableEncrypt.GenerateSk()
+	//SearchableEncrypt.GenerateSk()
 
 	//query := []string{
 	//	"精神科",
@@ -55,10 +59,10 @@ func main() {
 	//User.QueryByKeyWords(query)
 	//fmt.Println()
 	//User.QueryByKeyWords(queryCompare)
-	
+
 	portForSendSlice := 9000
-	nodeToQuery := "http://192.168.42.129:10000"
-	startTime := "2023-10-07 15:25:10"
-	endTime := "2023-10-07 15:25:10"
+	nodeToQuery := "http://192.168.42.129:8000"
+	startTime := "2023-10-11 14:32:57"
+	endTime := "2023-10-11 14:32:57"
 	User.QueryData(nodeToQuery, startTime, endTime, portForSendSlice)
-	}
+}
