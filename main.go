@@ -1,8 +1,13 @@
 package main
 
 import (
-	"IOT_Storage/src/User"
-)
+	"IOT_Storage/src/User"，
+
+​	"IOT_Storage/src/Node"
+
+）
+
+
 
 func main() {
 	//iot device process
@@ -34,7 +39,7 @@ func main() {
 	//routerChallenge.Run(":8081")
 	//routerGetSlice := Node.ServerGetSlice()
 	//routerGetSlice.Run(":8081")
-
+	
 	//user process
 	//userIsAlive := User.Ping()
 	//go userIsAlive.Run(":8080")
@@ -43,7 +48,7 @@ func main() {
 	//User.SignForRandom("http://192.168.42.129:8081")
 	//P2P_Net.P2pPing()
 	//SearchableEncrypt.GenerateSk()
-
+	
 	//query := []string{
 	//	"精神科",
 	//	"食欲不振",
@@ -58,11 +63,13 @@ func main() {
 	//
 	//User.QueryByKeyWords(query)
 	//fmt.Println()
-	//User.QueryByKeyWords(queryCompare)
+	//User.QueryByKeyWords(queryCompare)	portForSendSlice := 9000
+		nodeToQuery := "http://192.168.42.129:8000"
+		startTime := "2023-10-11 14:32:57"
+		endTime := "2023-10-11 14:32:57"
 
-	portForSendSlice := 9000
-	nodeToQuery := "http://192.168.42.129:8000"
-	startTime := "2023-10-11 14:32:57"
-	endTime := "2023-10-11 14:32:57"
-	User.QueryData(nodeToQuery, startTime, endTime, portForSendSlice)
-}
+User.QueryData(nodeToQuery, startTime, endTime, portForSendSlice)
+
+	
+	//Node.CreateConfig()
+	Node.NodeInit()

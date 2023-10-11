@@ -176,6 +176,7 @@ func NodeInit() {
 	v1 := router.Group("")
 	NodeGetQuery(v1)
 	NodeIndexPageForUser(v1)
+	NodeQueryDataForUSer(v1)
 	router.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForQuery))
 
 	//queryIndex := NodeGetQuery()
