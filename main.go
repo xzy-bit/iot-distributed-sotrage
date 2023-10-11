@@ -1,9 +1,6 @@
 package main
 
-import (
-	"IOT_Storage/src/User"
-	"fmt"
-)
+import "IOT_Storage/src/User"
 
 func main() {
 	//iot device process
@@ -48,25 +45,25 @@ func main() {
 
 	//SearchableEncrypt.GenerateSk()
 
-	query := []string{
-		"精神科",
-		"食欲不振",
-		"记忆力衰退",
-	}
+	//query := []string{
+	//	"精神科",
+	//	"食欲不振",
+	//	"记忆力衰退",
+	//}
+	//
+	//queryCompare := []string{
+	//	"精神科",
+	//	"心律不齐",
+	//	"记忆力衰退",
+	//}
+	//
+	//User.QueryByKeyWords(query)
+	//fmt.Println()
+	//User.QueryByKeyWords(queryCompare)
 
-	queryCompare := []string{
-		"精神科",
-		"心律不齐",
-		"记忆力衰退",
-	}
-
-	User.QueryByKeyWords(query)
-	fmt.Println()
-	User.QueryByKeyWords(queryCompare)
-
-	//portForSendSlice := 9000
-	//nodeToQuery := "http://192.168.42.129:8000"
-	//startTime := "2023-10-07 15:25:10"
-	//endTime := "2023-10-07 15:25:10"
-	//User.QueryData(nodeToQuery, startTime, endTime, portForSendSlice)
+	portForSendSlice := 9000
+	nodeToQuery := "http://192.168.42.129:10000"
+	startTime := "2023-10-07 15:25:10"
+	endTime := "2023-10-07 15:25:10"
+	User.QueryData(nodeToQuery, startTime, endTime, portForSendSlice)
 }
