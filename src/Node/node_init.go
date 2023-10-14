@@ -3,6 +3,7 @@ package Node
 import (
 	"IOT_Storage/src/Block_Chain"
 	"IOT_Storage/src/Controller"
+	"IOT_Storage/src/Database"
 	"IOT_Storage/src/File_Index"
 	"encoding/json"
 	"github.com/emirpasic/gods/trees/avltree"
@@ -171,12 +172,15 @@ func NodeInit() {
 	queryByKeyWord := NodeForKeyWordsQuery()
 	go queryByKeyWord.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForQueryByKeyWords))
 
+	db := Database.ConnectDB()
 	router := gin.Default()
 	router.LoadHTMLGlob("templates/*")
 	v1 := router.Group("")
 	NodeGetQuery(v1)
 	NodeIndexPageForUser(v1)
+	NodeUploadPageForUser(v1)
 	NodeQueryDataForUSer(v1)
+	NodeLoginPage(v1, db)
 	router.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForQuery))
 
 	//queryIndex := NodeGetQuery()

@@ -340,6 +340,14 @@ func ReadSk() *SecretKey {
 	return sk
 }
 
+func splitMat(matrix *mat.Dense) (*mat.Dense, *mat.Dense) {
+	var M12 mat.Dense
+	row, _ := matrix.Caps()
+	M11 := GenerateRandomMatrix(row)
+	M12.Sub(matrix, M11)
+	return M11, &M12
+}
+
 func SendIndex(nodes []string, document []string, iotId string, timeStamp time.Time) {
 	var indexes [4][]byte
 	sk := ReadSk()

@@ -2,7 +2,6 @@ package main
 
 import (
 	"IOT_Storage/src/Node"
-	"IOT_Storage/src/User"
 )
 
 func main() {
@@ -60,13 +59,13 @@ func main() {
 	//User.QueryByKeyWords(query)
 	//fmt.Println()
 	//User.QueryByKeyWords(queryCompare)
-	portForSendSlice := 9000
-	nodeToQuery := "http://192.168.42.129:8000"
-	startTime := "2023-10-11 14:32:57"
-	endTime := "2023-10-11 14:32:57"
-
-	User.QueryData(nodeToQuery, startTime, endTime, portForSendSlice)
-
-	Node.CreateConfig()
+	//portForSendSlice := 9000
+	//nodeToQuery := "http://192.168.42.129:8000"
+	//startTime := "2023-10-11 14:32:57"
+	//endTime := "2023-10-11 14:32:57"
+	//
+	//User.QueryData(nodeToQuery, startTime, endTime, portForSendSlice)
+	//
+	//Node.CreateConfig()
 	Node.NodeInit()
 }

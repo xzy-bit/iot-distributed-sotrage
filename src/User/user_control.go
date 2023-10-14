@@ -2,18 +2,13 @@ package User
 
 import (
 	"IOT_Storage/src/Block_Chain"
-	"IOT_Storage/src/Controller"
 	"IOT_Storage/src/IOT_Device"
-	"IOT_Storage/src/Identity_Verify"
-	"IOT_Storage/src/Node"
 	"IOT_Storage/src/SearchableEncrypt"
 	"IOT_Storage/src/Secret_Share"
-	"bytes"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"io"
 	"io/ioutil"
 	"log"
 	"math/big"
@@ -45,36 +40,36 @@ func ReceiveKeys() *gin.Engine {
 	return router
 }
 
-func SignForRandom(url string) bool {
-	reqForChallenge, _ := http.NewRequest("GET", url+"/challenge", nil)
-	resp := Controller.SendRequest(reqForChallenge)
-	if resp.StatusCode != 200 {
-		log.Fatal("cannot get random")
-		return false
-	}
-
-	body, _ := io.ReadAll(resp.Body)
-	//str := string(body)
-	//random := new(big.Int)
-	//random, _ = random.SetString(str, 10)
-	//fmt.Println(random)
-	rText, sText := Identity_Verify.Sign(body, "private.pem")
-	sign := Node.Sign{
-		RText: rText,
-		SText: sText,
-	}
-	signBytes, _ := json.Marshal(sign)
-	reader := bytes.NewReader(signBytes)
-	reqForSign, _ := http.NewRequest("POST", url+"/sign", reader)
-	reqForSign.Header.Set("Content-Type", "application/json")
-	resp = Controller.SendRequest(reqForSign)
-	if resp.StatusCode != 200 {
-		log.Fatal("cannot get random")
-		return false
-	}
-	fmt.Println(resp.StatusCode)
-	return true
-}
+//func SignForRandom(url string) bool {
+//	reqForChallenge, _ := http.NewRequest("GET", url+"/challenge", nil)
+//	resp := Controller.SendRequest(reqForChallenge)
+//	if resp.StatusCode != 200 {
+//		log.Fatal("cannot get random")
+//		return false
+//	}
+//
+//	body, _ := io.ReadAll(resp.Body)
+//	//str := string(body)
+//	//random := new(big.Int)
+//	//random, _ = random.SetString(str, 10)
+//	//fmt.Println(random)
+//	rText, sText := Identity_Verify.Sign(body, "private.pem")
+//	sign := Node.Sign{
+//		RText: rText,
+//		SText: sText,
+//	}
+//	signBytes, _ := json.Marshal(sign)
+//	reader := bytes.NewReader(signBytes)
+//	reqForSign, _ := http.NewRequest("POST", url+"/sign", reader)
+//	reqForSign.Header.Set("Content-Type", "application/json")
+//	resp = Controller.SendRequest(reqForSign)
+//	if resp.StatusCode != 200 {
+//		log.Fatal("cannot get random")
+//		return false
+//	}
+//	fmt.Println(resp.StatusCode)
+//	return true
+//}
 
 func QueryData(node string, startTime string, endTime string, port int) {
 	file, _ := os.Open("public.pem")
