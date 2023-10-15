@@ -31,6 +31,21 @@ type QueryRequest struct {
 	T22 mat.VecDense
 }
 
+type Mats struct {
+	D1 mat.Dense
+	D2 mat.Dense
+}
+
+type QueryVec struct {
+	Q1 mat.VecDense
+	Q2 mat.VecDense
+}
+
+type DocumentVec struct {
+	T1 mat.VecDense
+	T2 mat.VecDense
+}
+
 type SecretKey struct {
 	M1 mat.Dense
 	M2 mat.Dense
@@ -54,6 +69,9 @@ type DocumentScores []DocumentRank
 func MatrixPrint(m mat.Matrix) {
 	formattedMatrix := mat.Formatted(m, mat.Prefix(""), mat.Squeeze())
 	fmt.Printf("%v\n", formattedMatrix)
+}
+
+func VectorPrint(v mat.Vector) {
 }
 
 func GenerateRandomMatrix(n int) *mat.Dense {
@@ -166,7 +184,6 @@ func GenerateQueryVector(subKey []string) *mat.VecDense {
 			break
 		}
 	}
-	//r = 1
 	for i := range subKey {
 		for j := range keyWords {
 			if subKey[i] == keyWords[j] {
@@ -178,7 +195,7 @@ func GenerateQueryVector(subKey []string) *mat.VecDense {
 		}
 	}
 	data[n] = r
-	data[n+1] = rand.NormFloat64()
+	data[n+1] = 1
 	docVec := mat.NewVecDense(n+2, data)
 	return docVec
 }
@@ -221,7 +238,7 @@ func BuildIndex(documentKeyWords []string, sk *SecretKey) *Document {
 	docVec := GenerateDocumentVector(documentKeyWords)
 
 	//println("docVec")
-	//MatrixPrint(docVec)
+	//MatrixPrint(docVec.T())
 
 	p1, p2 := splitVec(docVec, &sk.S, 0)
 	p11, p12 := splitVec(p1, &sk.S, 0)
@@ -240,6 +257,30 @@ func BuildIndex(documentKeyWords []string, sk *SecretKey) *Document {
 	return &document
 }
 
+func BuildIndexForNode(documentKeyWords []string, sk *SecretKey) *Document {
+	var document Document
+	var i12 mat.VecDense
+	var i22 mat.VecDense
+	docVec := GenerateDocumentVector(documentKeyWords)
+
+	//println("docVec")
+	//MatrixPrint(docVec.T())
+
+	p1, p2 := splitVec(docVec, &sk.S, 0)
+	i11, _ := splitVec(p1, &sk.S, 0)
+	i21, _ := splitVec(p2, &sk.S, 0)
+
+	i12.SubVec(p1, i11)
+	i22.SubVec(p2, i21)
+
+	document.I11 = *i11
+	document.I12 = i12
+	document.I21 = *i21
+	document.I22 = i22
+
+	return &document
+}
+
 func Trapdoor(queryKeywords []string, sk *SecretKey) *QueryRequest {
 	var t11 mat.VecDense
 	var t12 mat.VecDense
@@ -251,9 +292,10 @@ func Trapdoor(queryKeywords []string, sk *SecretKey) *QueryRequest {
 
 	qryVec := GenerateQueryVector(queryKeywords)
 	//println("qryVec")
-	//MatrixPrint(qryVec)
+	//MatrixPrint(qryVec.T())
 
 	q1, q2 := splitVec(qryVec, &sk.S, 1)
+
 	q11, q12 := splitVec(q1, &sk.S, 1)
 	q21, q22 := splitVec(q2, &sk.S, 1)
 
@@ -272,6 +314,31 @@ func Trapdoor(queryKeywords []string, sk *SecretKey) *QueryRequest {
 	return &query
 }
 
+func TrapDoorWithSplitMat(queryKeywords []string, sk *SecretKey) *QueryVec {
+	var query QueryVec
+	var t1 mat.VecDense
+	var t2 mat.VecDense
+	var M1_Inverse mat.Dense
+	var M2_Inverse mat.Dense
+
+	qryVec := GenerateQueryVector(queryKeywords)
+	//println("qryVec")
+	//MatrixPrint(qryVec.T())
+
+	q1, q2 := splitVec(qryVec, &sk.S, 1)
+
+	M1_Inverse.Inverse(&sk.M1)
+	M2_Inverse.Inverse(&sk.M2)
+
+	t1.MulVec(&M1_Inverse, q1)
+	t2.MulVec(&M2_Inverse, q2)
+
+	query.Q1 = t1
+	query.Q2 = t2
+
+	return &query
+}
+
 func Query(doc *Document, query *QueryRequest) float64 {
 	var result1 mat.VecDense
 	var result2 mat.VecDense
@@ -281,10 +348,25 @@ func Query(doc *Document, query *QueryRequest) float64 {
 
 	result1.MulVec(query.T11.T(), &doc.I11)
 	result2.MulVec(query.T12.T(), &doc.I12)
+	//fmt.Println(result1.At(0, 0) + result2.At(0, 0))
+
 	result3.MulVec(query.T21.T(), &doc.I21)
 	result4.MulVec(query.T22.T(), &doc.I22)
+	//fmt.Println(result3.At(0, 0) + result4.At(0, 0))
 
 	return result1.At(0, 0) + result2.At(0, 0) + result3.At(0, 0) + result4.At(0, 0)
+}
+
+func QueryWithSplitMat(doc *DocumentVec, query *QueryVec) float64 {
+	var result1 mat.VecDense
+	var result2 mat.VecDense
+	result1.MulVec(doc.T1.T(), &query.Q1)
+	//fmt.Println(result1.At(0, 0))
+
+	result2.MulVec(doc.T2.T(), &query.Q2)
+	//fmt.Println(result2.At(0, 0))
+
+	return result1.At(0, 0) + result2.At(0, 0)
 }
 
 func QueryForUser(subKey []string, documents []Document, sk *SecretKey) []float64 {
@@ -296,6 +378,46 @@ func QueryForUser(subKey []string, documents []Document, sk *SecretKey) []float6
 	}
 
 	return results
+}
+
+func QueryForUserWithSplitMat(subKey []string, documents []DocumentVec, sk *SecretKey) []float64 {
+	query := TrapDoorWithSplitMat(subKey, sk)
+	results := []float64{}
+	for i := range documents {
+		result := QueryWithSplitMat(&documents[i], query)
+		results = append(results, result)
+	}
+
+	return results
+}
+
+func RestoreDocumentVecFromDocument(document *Document, mat1 *Mats, mat2 *Mats) *DocumentVec {
+	var temp1 mat.VecDense
+	var temp2 mat.VecDense
+	var temp3 mat.VecDense
+	var temp4 mat.VecDense
+
+	var vec DocumentVec
+
+	temp1.MulVec(&mat1.D1, &document.I11)
+	temp2.MulVec(&mat1.D1, &document.I12)
+	temp3.MulVec(&mat1.D2, &document.I11)
+	temp4.MulVec(&mat1.D2, &document.I12)
+
+	temp1.AddVec(&temp1, &temp2)
+	temp3.AddVec(&temp3, &temp4)
+	vec.T1.AddVec(&temp1, &temp3)
+
+	temp1.MulVec(&mat2.D1, &document.I21)
+	temp2.MulVec(&mat2.D1, &document.I22)
+	temp3.MulVec(&mat2.D2, &document.I21)
+	temp4.MulVec(&mat2.D2, &document.I22)
+
+	temp1.AddVec(&temp1, &temp2)
+	temp3.AddVec(&temp3, &temp4)
+	vec.T2.AddVec(&temp1, &temp3)
+
+	return &vec
 }
 
 func GenerateSk() {
@@ -340,12 +462,16 @@ func ReadSk() *SecretKey {
 	return sk
 }
 
-func splitMat(matrix *mat.Dense) (*mat.Dense, *mat.Dense) {
+func splitMat(matrix *mat.Dense) *Mats {
+	var mats Mats
 	var M12 mat.Dense
 	row, _ := matrix.Caps()
 	M11 := GenerateRandomMatrix(row)
-	M12.Sub(matrix, M11)
-	return M11, &M12
+	M12.Sub(matrix.T(), M11)
+
+	mats.D1 = *M11
+	mats.D2 = M12
+	return &mats
 }
 
 func SendIndex(nodes []string, document []string, iotId string, timeStamp time.Time) {
