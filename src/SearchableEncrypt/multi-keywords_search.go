@@ -584,6 +584,8 @@ func SendSplitMat(nodes []string) {
 				"mat_split1": {string(m11)},
 				"mat_split2": {string(m21)},
 			}
+			//fmt.Println(string(m11))
+			//fmt.Println(string(m21))
 			resp, _ := http.PostForm(node+"/getSplitMat", body)
 			if resp.StatusCode != 200 {
 				log.Fatal("can not send splitMat to nodes")
@@ -623,6 +625,34 @@ func SendSplitMat(nodes []string) {
 			}
 		}
 	}
+}
+
+func QueryByKeyWordsWithSplitMat(queryKeyWords []string) []DocumentRank {
+	sk := ReadSk()
+	queryInx := TrapDoorWithSplitMat(queryKeyWords, sk)
+	node := "http://192.168.42.129:8020"
+
+	Q1, _ := queryInx.Q1.MarshalBinary()
+	Q2, _ := queryInx.Q2.MarshalBinary()
+
+	body := url.Values{
+		"Q1": {string(Q1)},
+		"Q2": {string(Q2)},
+	}
+	resp, _ := http.PostForm(node+"/queryByKeyWordsWithSplitMat", body)
+	if resp.StatusCode != 200 {
+		log.Fatal("can not send data to nodes")
+	}
+
+	data, err := ioutil.ReadAll(resp.Body)
+	//resp.Body = ioutil.NopCloser(bytes.NewBuffer(data))
+	if err != nil {
+		log.Fatal("can not get the data")
+	}
+
+	var documentScores []DocumentRank
+	json.Unmarshal(data, &documentScores)
+	return documentScores
 }
 
 func QueryByKeyWords(queryKeyWords []string) []DocumentRank {

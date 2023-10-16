@@ -164,3 +164,8 @@ func QueryByKeyWords(query []string) {
 	documentScores := SearchableEncrypt.QueryByKeyWords(query)
 	QueryDocumentRank(documentScores)
 }
+
+func QueryByKeyWorsWithSplitMat(query []string) {
+	documentScores := SearchableEncrypt.QueryByKeyWords(query)
+	QueryDocumentRank(documentScores)
+}
