@@ -70,8 +70,8 @@ func TestQuery(t *testing.T) {
 	}
 	docInx1 := BuildIndex(document1, sk)
 	docInx2 := BuildIndex(document2, sk)
-	//docInx1 := BuildIndexForNode(document1, sk)
-	//docInx2 := BuildIndexForNode(document2, sk)
+	//docInx1 := BuildIndexWithSplitMat(document1, sk)
+	//docInx2 := BuildIndexWithSplitMat(document2, sk)
 
 	documents := []Document{
 		*docInx1, *docInx2,
@@ -115,11 +115,11 @@ func TestQueryWithSplitMat(t *testing.T) {
 	}
 	//docInx1 := BuildIndex(document1, sk)
 	//docInx2 := BuildIndex(document2, sk)
-	docInx1 := BuildIndexForNode(document1, sk)
-	docInx2 := BuildIndexForNode(document2, sk)
+	docInx1 := BuildIndexWithSplitMat(document1, sk)
+	docInx2 := BuildIndexWithSplitMat(document2, sk)
 
-	mat1 := splitMat(&sk.M1)
-	mat2 := splitMat(&sk.M2)
+	mat1 := SplitMat(&sk.M1)
+	mat2 := SplitMat(&sk.M2)
 
 	docVec1 := RestoreDocumentVecFromDocument(docInx1, mat1, mat2)
 	docVec2 := RestoreDocumentVecFromDocument(docInx2, mat1, mat2)
@@ -157,10 +157,10 @@ func TestWithComparing(t *testing.T) {
 		"记忆力衰退",
 	}
 
-	docInx1 := BuildIndexForNode(document1, sk)
+	docInx1 := BuildIndexWithSplitMat(document1, sk)
 
-	mat1 := splitMat(&sk.M1)
-	mat2 := splitMat(&sk.M2)
+	mat1 := SplitMat(&sk.M1)
+	mat2 := SplitMat(&sk.M2)
 
 	docVec1 := RestoreDocumentVecFromDocument(docInx1, mat1, mat2)
 

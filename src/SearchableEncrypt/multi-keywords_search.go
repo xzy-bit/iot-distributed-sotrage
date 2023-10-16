@@ -257,7 +257,7 @@ func BuildIndex(documentKeyWords []string, sk *SecretKey) *Document {
 	return &document
 }
 
-func BuildIndexForNode(documentKeyWords []string, sk *SecretKey) *Document {
+func BuildIndexWithSplitMat(documentKeyWords []string, sk *SecretKey) *Document {
 	var document Document
 	var i12 mat.VecDense
 	var i22 mat.VecDense
@@ -462,7 +462,7 @@ func ReadSk() *SecretKey {
 	return sk
 }
 
-func splitMat(matrix *mat.Dense) *Mats {
+func SplitMat(matrix *mat.Dense) *Mats {
 	var mats Mats
 	var M12 mat.Dense
 	row, _ := matrix.Caps()
@@ -501,6 +501,126 @@ func SendIndex(nodes []string, document []string, iotId string, timeStamp time.T
 		resp, _ := http.PostForm(node+"/getIndex", body)
 		if resp.StatusCode != 200 {
 			log.Fatal("can not send indexes to nodes")
+		}
+	}
+}
+
+func SendIndexWithSplitMat(nodes []string, document []string, iotId string, timeStamp time.Time) {
+	sk := ReadSk()
+	docInx := BuildIndexWithSplitMat(document, sk)
+
+	I11, _ := docInx.I11.MarshalBinary()
+	I12, _ := docInx.I12.MarshalBinary()
+	I21, _ := docInx.I21.MarshalBinary()
+	I22, _ := docInx.I22.MarshalBinary()
+
+	for index, node := range nodes {
+		if index == 0 {
+			body := url.Values{
+				"doc_split1": {string(I11)},
+				"doc_split2": {string(I12)},
+				"iotId":      {iotId},
+				"address":    {node},
+				"timeStamp":  {timeStamp.Format("2006-01-02 15:04:05")},
+			}
+			resp, _ := http.PostForm(node+"/getIndexWithSplitMat", body)
+			if resp.StatusCode != 200 {
+				log.Fatal("can not send indexes to nodes")
+			}
+		} else if index == 1 {
+			body := url.Values{
+				"doc_split1": {string(I21)},
+				"doc_split2": {string(I12)},
+				"iotId":      {iotId},
+				"address":    {node},
+				"timeStamp":  {timeStamp.Format("2006-01-02 15:04:05")},
+			}
+			resp, _ := http.PostForm(node+"/getIndexWithSplitMat", body)
+			if resp.StatusCode != 200 {
+				log.Fatal("can not send indexes to nodes")
+			}
+		} else if index == 2 {
+			body := url.Values{
+				"doc_split1": {string(I11)},
+				"doc_split2": {string(I22)},
+				"iotId":      {iotId},
+				"address":    {node},
+				"timeStamp":  {timeStamp.Format("2006-01-02 15:04:05")},
+			}
+			resp, _ := http.PostForm(node+"/getIndexWithSplitMat", body)
+			if resp.StatusCode != 200 {
+				log.Fatal("can not send indexes to nodes")
+			}
+		} else {
+			body := url.Values{
+				"doc_split1": {string(I21)},
+				"doc_split2": {string(I22)},
+				"iotId":      {iotId},
+				"address":    {node},
+				"timeStamp":  {timeStamp.Format("2006-01-02 15:04:05")},
+			}
+			resp, _ := http.PostForm(node+"/getIndexWithSplitMat", body)
+			if resp.StatusCode != 200 {
+				log.Fatal("can not send indexes to nodes")
+			}
+		}
+
+	}
+}
+
+func SendSplitMat(nodes []string) {
+	sk := ReadSk()
+	mat1 := SplitMat(&sk.M1)
+	mat2 := SplitMat(&sk.M2)
+
+	m11, _ := mat1.D1.MarshalBinary()
+	m12, _ := mat1.D2.MarshalBinary()
+	m21, _ := mat2.D1.MarshalBinary()
+	m22, _ := mat2.D2.MarshalBinary()
+
+	for index, node := range nodes {
+		if index == 0 {
+			body := url.Values{
+				"mat_split1": {string(m11)},
+				"mat_split2": {string(m21)},
+			}
+			resp, _ := http.PostForm(node+"/getSplitMat", body)
+			if resp.StatusCode != 200 {
+				log.Fatal("can not send splitMat to nodes")
+			}
+		} else if index == 1 {
+			if index == 0 {
+				body := url.Values{
+					"mat_split1": {string(m11)},
+					"mat_split2": {string(m22)},
+				}
+				resp, _ := http.PostForm(node+"/getSplitMat", body)
+				if resp.StatusCode != 200 {
+					log.Fatal("can not send splitMat to nodes")
+				}
+			}
+		} else if index == 2 {
+			if index == 0 {
+				body := url.Values{
+					"mat_split1": {string(m12)},
+					"mat_split2": {string(m21)},
+				}
+				resp, _ := http.PostForm(node+"/getSplitMat", body)
+				if resp.StatusCode != 200 {
+					log.Fatal("can not send splitMat to nodes")
+				}
+			}
+		} else {
+			if index == 0 {
+				body := url.Values{
+					"mat_split1": {string(m12)},
+					"mat_split2": {string(m22)},
+				}
+				resp, _ := http.PostForm(node+"/getSplitMat", body)
+				if resp.StatusCode != 200 {
+					log.Fatal("can not send splitMat to nodes")
+				}
+			}
 		}
 	}
 }
