@@ -97,12 +97,12 @@ func NodeInit() {
 			for {
 				resp := Controller.SendRequest(req)
 				if resp == nil {
-					log.Printf("Can not get connection with %s\n", trueUrl)
+					//log.Printf("Can not get connection with %s\n", trueUrl)
 					time.Sleep(time.Second)
 					pipe <- ""
 					continue
 				}
-				log.Printf("%s is alive\n", trueUrl)
+				//log.Printf("%s is alive\n", trueUrl)
 				pipe <- trueUrl
 				break
 			}
@@ -160,28 +160,34 @@ func NodeInit() {
 	getSliceRouter := NodeGetSlice()
 	go getSliceRouter.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForGetSlice))
 
-	getIndex := NodeGetIndex()
-	go getIndex.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForGetIndexFromUser))
-
 	sendSlice := NodeSendSlice()
 	go sendSlice.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForSendSlice))
 
 	sendIndex := NodeSendIndex()
 	go sendIndex.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForSendIndex))
 
-	queryByKeyWord := NodeForKeyWordsQuery()
-	go queryByKeyWord.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForQueryByKeyWords))
+	router_for_keywords_query := gin.Default()
+	v3 := router_for_keywords_query.Group("")
+	NodeForKeyWordsQuery(v3)
+	go router_for_keywords_query.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForQueryByKeyWords))
+
+	router_for_indexes := gin.Default()
+	v2 := router_for_indexes.Group("")
+	NodeGetIndex(v2)
+	NodeGetIndexWithSplitMat(v2)
+	NodeGetSpltMat(v2)
+	go router_for_indexes.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForGetIndexFromUser))
 
 	db := Database.ConnectDB()
-	router := gin.Default()
-	router.LoadHTMLGlob("templates/*")
-	v1 := router.Group("")
+	router_for_front_page := gin.Default()
+	router_for_front_page.LoadHTMLGlob("templates/*")
+	v1 := router_for_front_page.Group("")
 	NodeGetQuery(v1)
 	NodeIndexPageForUser(v1)
 	NodeUploadPageForUser(v1)
 	NodeQueryDataForUSer(v1)
 	NodeLoginPage(v1, db)
-	router.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForQuery))
+	router_for_front_page.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForQuery))
 
 	//queryIndex := NodeGetQuery()
 	//go queryIndex.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForQuery))

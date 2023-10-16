@@ -57,6 +57,14 @@ func SaveSlice(cipher string, fileName string) {
 	io.Copy(out, reader)
 }
 
+func SaveJson(info []byte, fileName string) {
+	os.MkdirAll(filepath.Dir(fileName), 0750)
+	out, _ := os.Create(fileName)
+	defer out.Close()
+	reader := bytes.NewReader(info)
+	io.Copy(out, reader)
+}
+
 func GetAllDataInCache() []Block_Chain.DATA {
 	data := []Block_Chain.DATA{}
 
