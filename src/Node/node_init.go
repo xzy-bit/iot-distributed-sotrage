@@ -157,18 +157,22 @@ func NodeInit() {
 	tokenRouter := NodeGetToken()
 	go tokenRouter.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForToken))
 
+	nodeSendSlice := NodeSendSlice()
+	go nodeSendSlice.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForSendSlice))
+
 	getSliceRouter := NodeGetSlice()
 	go getSliceRouter.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForGetSlice))
 
-	sendSlice := NodeSendSlice()
-	go sendSlice.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForSendSlice))
-
-	sendIndex := NodeSendIndex()
-	go sendIndex.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForSendIndex))
+	router_for_node_query := gin.Default()
+	v4 := router_for_node_query.Group("")
+	NodeSendIndex(v4)
+	NodeSendSplitMat(v4)
+	go router_for_node_query.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForSendIndex))
 
 	router_for_keywords_query := gin.Default()
 	v3 := router_for_keywords_query.Group("")
 	NodeForKeyWordsQuery(v3)
+	NodeForKeyWordsQueryWithSplitMat(v3)
 	go router_for_keywords_query.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForQueryByKeyWords))
 
 	router_for_indexes := gin.Default()
