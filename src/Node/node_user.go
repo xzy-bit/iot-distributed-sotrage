@@ -102,8 +102,8 @@ func NodeSearchServerForUser(rg *gin.RouterGroup) {
 			endTime = ParseDateLocal(endTime)
 			portForSendSlice := 9000
 			nodeToQuery := "http://192.168.42.129:8000"
-			patient := User.QueryData(nodeToQuery, startTime, endTime, portForSendSlice)
-			context.JSONP(200, patient)
+			patients := User.QueryData(nodeToQuery, startTime, endTime, portForSendSlice)
+			context.JSONP(200, patients)
 		} else {
 			faculty := context.PostForm("faculties")
 			features := context.PostFormArray("features")

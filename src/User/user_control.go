@@ -71,8 +71,9 @@ func ReceiveKeys() *gin.Engine {
 //	return true
 //}
 
-func QueryData(node string, startTime string, endTime string, port int) IOT_Device.Patient {
+func QueryData(node string, startTime string, endTime string, port int) []IOT_Device.Patient {
 	var patient IOT_Device.Patient
+	var patients []IOT_Device.Patient
 	file, _ := os.Open("public.pem")
 	iotId := IOT_Device.GenerateIotId(file)
 	println(iotId)
@@ -120,13 +121,14 @@ func QueryData(node string, startTime string, endTime string, port int) IOT_Devi
 			if count == 4 {
 				msgBytes := Secret_Share.ResotreMsg(cipher, p, choice)
 				json.Unmarshal(msgBytes, &patient)
+				patients = append(patients, patient)
 				log.Println(patient)
 				break
 			}
 		}
 	}
 	fmt.Println("End of data querying!")
-	return patient
+	return patients
 }
 
 func UserGetSlice(address string, hash []byte) []byte {
