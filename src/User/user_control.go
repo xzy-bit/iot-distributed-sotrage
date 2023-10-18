@@ -71,7 +71,8 @@ func ReceiveKeys() *gin.Engine {
 //	return true
 //}
 
-func QueryData(node string, startTime string, endTime string, port int) {
+func QueryData(node string, startTime string, endTime string, port int) IOT_Device.Patient {
+	var patient IOT_Device.Patient
 	file, _ := os.Open("public.pem")
 	iotId := IOT_Device.GenerateIotId(file)
 	println(iotId)
@@ -118,14 +119,14 @@ func QueryData(node string, startTime string, endTime string, port int) {
 			}
 			if count == 4 {
 				msgBytes := Secret_Share.ResotreMsg(cipher, p, choice)
-				var patient IOT_Device.Patient
 				json.Unmarshal(msgBytes, &patient)
-				fmt.Println(patient)
+				log.Println(patient)
 				break
 			}
 		}
 	}
 	fmt.Println("End of data querying!")
+	return patient
 }
 
 func UserGetSlice(address string, hash []byte) []byte {
@@ -165,7 +166,7 @@ func QueryByKeyWords(query []string) {
 	QueryDocumentRank(documentScores)
 }
 
-func QueryByKeyWorsWithSplitMat(query []string) {
-	documentScores := SearchableEncrypt.QueryByKeyWords(query)
+func QueryByKeyWordsWithSplitMat(query []string) {
+	documentScores := SearchableEncrypt.QueryByKeyWordsWithSplitMat(query)
 	QueryDocumentRank(documentScores)
 }

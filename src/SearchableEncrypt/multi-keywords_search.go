@@ -13,6 +13,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -573,12 +574,15 @@ func SendSplitMat(nodes []string) {
 	mat1 := SplitMat(&sk.M1)
 	mat2 := SplitMat(&sk.M2)
 
+	portForSendSplitMat := 8040
+
 	m11, _ := mat1.D1.MarshalBinary()
 	m12, _ := mat1.D2.MarshalBinary()
 	m21, _ := mat2.D1.MarshalBinary()
 	m22, _ := mat2.D2.MarshalBinary()
 
 	for index, node := range nodes {
+		node = node + ":" + strconv.Itoa(index+portForSendSplitMat)
 		if index == 0 {
 			body := url.Values{
 				"mat_split1": {string(m11)},
@@ -591,38 +595,37 @@ func SendSplitMat(nodes []string) {
 				log.Fatal("can not send splitMat to nodes")
 			}
 		} else if index == 1 {
-			if index == 0 {
-				body := url.Values{
-					"mat_split1": {string(m11)},
-					"mat_split2": {string(m22)},
-				}
-				resp, _ := http.PostForm(node+"/getSplitMat", body)
-				if resp.StatusCode != 200 {
-					log.Fatal("can not send splitMat to nodes")
-				}
+
+			body := url.Values{
+				"mat_split1": {string(m11)},
+				"mat_split2": {string(m22)},
+			}
+			resp, _ := http.PostForm(node+"/getSplitMat", body)
+			if resp.StatusCode != 200 {
+				log.Fatal("can not send splitMat to nodes")
 			}
 		} else if index == 2 {
-			if index == 0 {
-				body := url.Values{
-					"mat_split1": {string(m12)},
-					"mat_split2": {string(m21)},
-				}
-				resp, _ := http.PostForm(node+"/getSplitMat", body)
-				if resp.StatusCode != 200 {
-					log.Fatal("can not send splitMat to nodes")
-				}
+
+			body := url.Values{
+				"mat_split1": {string(m12)},
+				"mat_split2": {string(m21)},
 			}
+			resp, _ := http.PostForm(node+"/getSplitMat", body)
+			if resp.StatusCode != 200 {
+				log.Fatal("can not send splitMat to nodes")
+			}
+
 		} else {
-			if index == 0 {
-				body := url.Values{
-					"mat_split1": {string(m12)},
-					"mat_split2": {string(m22)},
-				}
-				resp, _ := http.PostForm(node+"/getSplitMat", body)
-				if resp.StatusCode != 200 {
-					log.Fatal("can not send splitMat to nodes")
-				}
+
+			body := url.Values{
+				"mat_split1": {string(m12)},
+				"mat_split2": {string(m22)},
 			}
+			resp, _ := http.PostForm(node+"/getSplitMat", body)
+			if resp.StatusCode != 200 {
+				log.Fatal("can not send splitMat to nodes")
+			}
+
 		}
 	}
 }
@@ -641,13 +644,12 @@ func QueryByKeyWordsWithSplitMat(queryKeyWords []string) []DocumentRank {
 	}
 	resp, _ := http.PostForm(node+"/queryByKeyWordsWithSplitMat", body)
 	if resp.StatusCode != 200 {
-		log.Fatal("can not send data to nodes")
+		log.Println("can not send data to nodes")
 	}
-
 	data, err := ioutil.ReadAll(resp.Body)
 	//resp.Body = ioutil.NopCloser(bytes.NewBuffer(data))
 	if err != nil {
-		log.Fatal("can not get the data")
+		log.Println("can not get the data")
 	}
 
 	var documentScores []DocumentRank
