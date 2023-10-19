@@ -4,6 +4,9 @@ import (
 	"IOT_Storage/src/SM4"
 	"IOT_Storage/src/SearchableEncrypt"
 	"IOT_Storage/src/Secret_Share"
+	"bytes"
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -207,6 +210,17 @@ func SendIndexWithSplitMat(nodes []string, portForIndex int) {
 	fmt.Println("Indexes were successfully sent to nodes")
 }
 
+func SliceHash(DeviceID string, TimeStamp time.Time, address string) []byte {
+	info := bytes.Join([][]byte{
+		[]byte(DeviceID),
+		[]byte(TimeStamp.String()),
+		[]byte(address),
+	}, []byte{})
+	hash := sha256.Sum256(info)
+	Hash := hash[:]
+	return Hash
+}
+
 func SendSliceWithSM4(data []byte, nodes []string, password string, portForSlice int) {
 	var sliceNode [7]string
 
@@ -225,6 +239,12 @@ func SendSliceWithSM4(data []byte, nodes []string, password string, portForSlice
 	timeStamp := time.Now()
 	fmt.Println(timeStamp.Format("2006-01-02 15:04:05"))
 
+	var hashTable [][]byte
+	for _, node := range sliceNode {
+		hash := SliceHash(iotId, timeStamp, node)
+		hashTable = append(hashTable, hash)
+	}
+
 	for i := 0; i < len(sm4Msg); i++ {
 		ciphertext, p := Secret_Share.SliceAndEncrypt(matrix, sm4Msg[i])
 		for index, node := range sliceNode {
@@ -235,7 +255,8 @@ func SendSliceWithSM4(data []byte, nodes []string, password string, portForSlice
 				"serial":    {strconv.Itoa(index)},
 				"address":   {node},
 				"timeStamp": {timeStamp.Format("2006-01-02 15:04:05")},
-				"code":      {strconv.Itoa(i)},
+				"index":     {strconv.Itoa(i)},
+				"hash":      {hex.EncodeToString(hashTable[index])},
 			}
 			resp, _ := http.PostForm(node+"/slice", body)
 			if resp.StatusCode != 200 {

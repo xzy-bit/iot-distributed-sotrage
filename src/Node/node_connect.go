@@ -98,22 +98,15 @@ func NodeGetSlice() *gin.Engine {
 		address := context.PostForm("address")
 		modNumStr := context.PostForm("modNum")
 		timeStamp := context.PostForm("timeStamp")
+		hash := context.PostForm("hash")
+		index := context.PostForm("index")
 
-		//log.Println(cipherStr)
-		//log.Println(iotId)
-		//log.Println(serialStr)
-		//log.Println(address)
-		log.Println(modNumStr)
-		//log.Println(timeStamp)
-
-		dataIndex := GenerateDATA(iotId, serialStr, address, modNumStr, timeStamp)
+		dataIndex := GenerateDATA(iotId, serialStr, address, modNumStr, timeStamp, hash)
 		AddDataToCache(dataIndex)
 		log.Println("Add data index to cache...")
 		log.Println(Head.Data)
 
-		hash := hex.EncodeToString(dataIndex.Hash)
-		fileName := "./slices/" + hash + ".slc"
-		//context.SaveUploadedFile()
+		fileName := "./slices/" + hash + "_" + index + ".slc"
 		SaveSlice(cipherStr, fileName)
 		context.String(200, "Get slice")
 	})

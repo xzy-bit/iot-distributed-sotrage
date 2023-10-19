@@ -5,6 +5,7 @@ import (
 	"IOT_Storage/src/Controller"
 	"IOT_Storage/src/File_Index"
 	"bytes"
+	"encoding/hex"
 	"encoding/json"
 	"io"
 	"math/big"
@@ -16,21 +17,21 @@ import (
 )
 
 // save the sclie and generate DATA struct
-func GenerateDATA(iotId string, serial string, address string, modNum string, timeStamp string) *Block_Chain.DATA {
+func GenerateDATA(iotId string, serial string, address string, modNum string, timeStamp string, hash string) *Block_Chain.DATA {
 	num, _ := strconv.Atoi(serial)
 	mod := new(big.Int)
 	mod.SetString(modNum, 10)
 	//log.Println("modNum:" + mod.String())
 	stamp, _ := time.Parse("2006-01-02 15:04:05", timeStamp)
+	h, _ := hex.DecodeString(hash)
 	dataIndex := Block_Chain.DATA{
 		DeviceID:  iotId,
 		TimeStamp: stamp,
 		Serial:    num,
-		Hash:      nil,
+		Hash:      h,
 		StoreOn:   address,
 		ModNum:    mod,
 	}
-	Block_Chain.DataHash(&dataIndex)
 	return &dataIndex
 }
 
