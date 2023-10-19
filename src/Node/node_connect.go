@@ -106,7 +106,7 @@ func NodeGetSlice() *gin.Engine {
 		log.Println("Add data index to cache...")
 		log.Println(Head.Data)
 
-		fileName := "./slices/" + hash + "_" + index + ".slc"
+		fileName := "./slices/" + hash + "/" + index + ".slc"
 		SaveSlice(cipherStr, fileName)
 		context.String(200, "Get slice")
 	})
