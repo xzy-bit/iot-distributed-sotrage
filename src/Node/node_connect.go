@@ -99,9 +99,11 @@ func NodeGetSlice() *gin.Engine {
 		modNumStr := context.PostForm("modNum")
 		timeStamp := context.PostForm("timeStamp")
 		hash := context.PostForm("hash")
-		index := context.PostForm("index")
+		index := context.PostForm("indexOfGroup")
 
-		dataIndex := GenerateDATA(iotId, serialStr, address, modNumStr, timeStamp, hash)
+		num, _ := strconv.Atoi(index)
+
+		dataIndex := GenerateDATA(iotId, serialStr, address, modNumStr, timeStamp, hash, num)
 		AddDataToCache(dataIndex)
 		log.Println("Add data index to cache...")
 		log.Println(Head.Data)

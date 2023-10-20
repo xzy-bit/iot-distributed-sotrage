@@ -25,10 +25,11 @@ type BlockChain struct {
 }
 
 type DATA struct {
-	DeviceID  string
-	TimeStamp time.Time
-	Serial    int
-	Hash      []byte
-	StoreOn   string
-	ModNum    *big.Int
+	DeviceID     string
+	TimeStamp    time.Time
+	Serial       int
+	Hash         []byte
+	StoreOn      string
+	IndexOfGroup int
+	ModNum       *big.Int
 }

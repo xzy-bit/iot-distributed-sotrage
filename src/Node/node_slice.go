@@ -17,7 +17,7 @@ import (
 )
 
 // save the sclie and generate DATA struct
-func GenerateDATA(iotId string, serial string, address string, modNum string, timeStamp string, hash string) *Block_Chain.DATA {
+func GenerateDATA(iotId string, serial string, address string, modNum string, timeStamp string, hash string, indexOfGroup int) *Block_Chain.DATA {
 	num, _ := strconv.Atoi(serial)
 	mod := new(big.Int)
 	mod.SetString(modNum, 10)
@@ -25,12 +25,13 @@ func GenerateDATA(iotId string, serial string, address string, modNum string, ti
 	stamp, _ := time.Parse("2006-01-02 15:04:05", timeStamp)
 	h, _ := hex.DecodeString(hash)
 	dataIndex := Block_Chain.DATA{
-		DeviceID:  iotId,
-		TimeStamp: stamp,
-		Serial:    num,
-		Hash:      h,
-		StoreOn:   address,
-		ModNum:    mod,
+		DeviceID:     iotId,
+		TimeStamp:    stamp,
+		Serial:       num,
+		Hash:         h,
+		StoreOn:      address,
+		ModNum:       mod,
+		IndexOfGroup: indexOfGroup,
 	}
 	return &dataIndex
 }
