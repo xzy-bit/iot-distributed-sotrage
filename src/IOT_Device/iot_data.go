@@ -244,19 +244,20 @@ func SendSliceWithSM4(data []byte, nodes []string, password string, portForSlice
 		hash := SliceHash(iotId, timeStamp, node)
 		hashTable = append(hashTable, hash)
 	}
+	modNum := Secret_Share.FixedPara()
 
 	for i := 0; i < len(sm4Msg); i++ {
-		ciphertext, p := Secret_Share.SliceAndEncrypt(matrix, sm4Msg[i])
+		ciphertext, p := Secret_Share.SliceAndEncryptWithFixedPara(matrix, sm4Msg[i], modNum)
 		for index, node := range sliceNode {
 			body := url.Values{
-				"cipher":    {ciphertext[index].String()},
-				"modNum":    {p.String()},
-				"iotId":     {iotId},
-				"serial":    {strconv.Itoa(index)},
-				"address":   {node},
-				"timeStamp": {timeStamp.Format("2006-01-02 15:04:05")},
-				"index":     {strconv.Itoa(i)},
-				"hash":      {hex.EncodeToString(hashTable[index])},
+				"cipher":       {ciphertext[index].String()},
+				"modNum":       {p.String()},
+				"iotId":        {iotId},
+				"serial":       {strconv.Itoa(index)},
+				"address":      {node},
+				"timeStamp":    {timeStamp.Format("2006-01-02 15:04:05")},
+				"indexOfGroup": {strconv.Itoa(i)},
+				"hash":         {hex.EncodeToString(hashTable[index])},
 			}
 			resp, _ := http.PostForm(node+"/slice", body)
 			if resp.StatusCode != 200 {
@@ -267,3 +268,46 @@ func SendSliceWithSM4(data []byte, nodes []string, password string, portForSlice
 	fmt.Println("Sending complete")
 	return len(sm4Msg)
 }
+
+//func SendSM4Slice(data []byte, nodes []string, password string, portForSlice int) {
+//	var sliceNode [7]string
+//
+//	for i := 0; i < 7; i++ {
+//		sliceNode[i] = nodes[i] + ":" + strconv.Itoa(i+portForSlice)
+//	}
+//
+//	sm4Msg := SM4.Encrypt(data, password)
+//	matrix := Secret_Share.MatrixInit()
+//
+//	file, _ := os.Open("public.pem")
+//
+//	iotId := GenerateIotId(file)
+//	file.Close()
+//	timeStamp := time.Now()
+//	fmt.Println(timeStamp.Format("2006-01-02 15:04:05"))
+//
+//	var hashTable [][]byte
+//	for _, node := range sliceNode {
+//		hash := SliceHash(iotId, timeStamp, node)
+//		hashTable = append(hashTable, hash)
+//	}
+//
+//	modNum := Secret_Share.FixedPara()
+//	ciphertext, p := Secret_Share.SliceAndEncryptWithFixedPara(matrix, sm4Msg, modNum)
+//	for index, node := range sliceNode {
+//		body := url.Values{
+//			"cipher":    {ciphertext[index].String()},
+//			"modNum":    {p.String()},
+//			"iotId":     {iotId},
+//			"serial":    {strconv.Itoa(index)},
+//			"address":   {node},
+//			"timeStamp": {timeStamp.Format("2006-01-02 15:04:05")},
+//			"hash":      {hex.EncodeToString(hashTable[index])},
+//		}
+//		resp, _ := http.PostForm(node+"/slice", body)
+//		if resp.StatusCode != 200 {
+//			log.Println("slice:", index, "can not send to ", node)
+//		}
+//	}
+//	fmt.Println("Sending complete")
+//}

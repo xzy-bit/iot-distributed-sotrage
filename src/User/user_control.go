@@ -130,63 +130,66 @@ func QueryData(node string, startTime string, endTime string, port int) []IOT_De
 	return patients
 }
 
-func QueryDataWithSM4(node string, startTime string, endTime string, port int, password string) [][]byte {
-	file, _ := os.Open("public.pem")
-	iotId := IOT_Device.GenerateIotId(file)
-	println(iotId)
-	defer file.Close()
-	body := url.Values{
-		"iotId":     {iotId},
-		"startTime": {startTime},
-		"endTime":   {endTime},
-	}
-	resp, _ := http.PostForm(node+"/query", body)
-	if resp.StatusCode != 200 {
-		log.Fatal("can not send query to nodes")
-	}
-	data, err := ioutil.ReadAll(resp.Body)
-	//resp.Body = ioutil.NopCloser(bytes.NewBuffer(data))
-	if err != nil {
-		log.Fatal("can not get the data")
-	}
-
-	var indexes []Block_Chain.DATA
-	json.Unmarshal(data, &indexes)
-
-	for i := 0; i < len(indexes); i++ {
-		fmt.Println(indexes[i])
-	}
-
-	for i := 0; i < len(indexes); i += 7 {
-		count := 0
-		var cipher []*big.Int
-		var p big.Int
-		var choice []int
-		p = *indexes[i].ModNum
-		for j := 0; j < 7; j++ {
-			temp := strings.Split(indexes[i+j].StoreOn, ":")
-			trueUrl := temp[0] + ":" + temp[1] + ":" + strconv.Itoa(port+j) + "/userGetSlice"
-			slice := UserGetSlice(trueUrl, indexes[i+j].Hash)
-			//fmt.Println(slice)
-			if len(slice) == 0 {
-				fmt.Printf("Can not get slice from %s\n", trueUrl)
-			} else {
-				choice = append(choice, indexes[i+j].Serial)
-				num := big.NewInt(1)
-				num.SetString(string(slice), 10)
-				//fmt.Println(num)
-				cipher = append(cipher, num)
-				//cipher = append(cipher)
-				count++
-			}
-			if count == 4 {
-				break
-			}
-		}
-	}
-	fmt.Println("End of data querying!")
-	return nil
-}
+//func QueryDataWithSM4(node string, startTime string, endTime string, numOfGroup int, password string) [][]byte {
+//	file, _ := os.Open("public.pem")
+//	iotId := IOT_Device.GenerateIotId(file)
+//	println(iotId)
+//	defer file.Close()
+//	body := url.Values{
+//		"iotId":     {iotId},
+//		"startTime": {startTime},
+//		"endTime":   {endTime},
+//	}
+//	resp, _ := http.PostForm(node+"/query", body)
+//	if resp.StatusCode != 200 {
+//		log.Fatal("can not send query to nodes")
+//	}
+//	data, err := ioutil.ReadAll(resp.Body)
+//	//resp.Body = ioutil.NopCloser(bytes.NewBuffer(data))
+//	if err != nil {
+//		log.Fatal("can not get the data")
+//	}
+//
+//	var indexes []Block_Chain.DATA
+//	json.Unmarshal(data, &indexes)
+//
+//	for i := 0; i < len(indexes); i++ {
+//		fmt.Println(indexes[i])
+//	}
+//
+//	for j := 0; j < numOfGroup; j++ {
+//		for i := 0; i < len(indexes); i += 7 {
+//			count := 0
+//			var cipher []*big.Int
+//			var p big.Int
+//			var choice []int
+//			p = *indexes[i].ModNum
+//			for j := 0; j < 7; j++ {
+//				temp := strings.Split(indexes[i+j].StoreOn, ":")
+//				trueUrl := temp[0] + ":" + temp[1] + ":" + strconv.Itoa(port+j) + "/userGetSlice"
+//				slice := UserGetSlice(trueUrl, indexes[i+j].Hash)
+//				//fmt.Println(slice)
+//				if len(slice) == 0 {
+//					fmt.Printf("Can not get slice from %s\n", trueUrl)
+//				} else {
+//					choice = append(choice, indexes[i+j].Serial)
+//					num := big.NewInt(1)
+//					num.SetString(string(slice), 10)
+//					//fmt.Println(num)
+//					cipher = append(cipher, num)
+//					//cipher = append(cipher)
+//					count++
+//				}
+//				if count == 4 {
+//					break
+//				}
+//			}
+//		}
+//	}
+//
+//	fmt.Println("End of data querying!")
+//	return nil
+//}
 
 func UserGetSlice(address string, hash []byte) []byte {
 

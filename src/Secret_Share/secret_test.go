@@ -41,6 +41,33 @@ func TestSliceAndEncrypt(t *testing.T) {
 	fmt.Println(result)
 }
 
+func TestSliceAndEncryptWithFixedPara(t *testing.T) {
+	stu := Student{
+		Name:  "XiaoMing",
+		Age:   18,
+		StuId: 1748526,
+	}
+
+	p := GenerateModNum(512)
+	fmt.Println(p.String())
+	stuInfo, _ := json.Marshal(stu)
+
+	matrix := MatrixInit()
+	ciphertext, _ := SliceAndEncryptWithFixedPara(matrix, stuInfo, p)
+	//fmt.Println(ciphertext)
+	cipher := []*big.Int{
+		ciphertext[0],
+		ciphertext[1],
+		ciphertext[2],
+		ciphertext[3],
+	}
+	MsgBytes := ResotreMsg(cipher, *p, []int{0, 1, 2, 3})
+
+	var result Student
+	json.Unmarshal(MsgBytes, &result)
+	fmt.Println(result)
+}
+
 func TestSlice(t *testing.T) {
 	data := make([]byte, 60000000)
 

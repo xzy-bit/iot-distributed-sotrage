@@ -43,6 +43,12 @@ func PaddingWithBytes(data []byte) []byte {
 	return result
 }
 
+func Encrypt(data []byte, password string) []byte {
+	key := GenerateSM4Key(password)
+	result, _ := sm4.Sm4Cbc(key, data, true)
+	return result
+}
+
 func EncryptWithPadding(data []byte, password string) [][]byte {
 	var output [][]byte
 	key := GenerateSM4Key(password)
