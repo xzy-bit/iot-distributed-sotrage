@@ -30,8 +30,8 @@ func GenerateDATA(iotId string, serial string, address string, modNum string, ti
 		Serial:       num,
 		Hash:         h,
 		StoreOn:      address,
-		ModNum:       mod,
 		IndexOfGroup: indexOfGroup,
+		ModNum:       mod,
 	}
 	return &dataIndex
 }

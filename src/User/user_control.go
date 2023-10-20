@@ -160,9 +160,9 @@ func QueryDataWithSM4(node string, startTime string, endTime string, port int, p
 	for i := 0; i < len(indexes); i += 7 {
 		count := 0
 		var cipher []*big.Int
-		var p big.Int
+		//var p big.Int
 		var choice []int
-		p = *indexes[i].ModNum
+		//p = *indexes[i].ModNum
 		for j := 0; j < 7; j++ {
 			temp := strings.Split(indexes[i+j].StoreOn, ":")
 			trueUrl := temp[0] + ":" + temp[1] + ":" + strconv.Itoa(port+j) + "/userGetSlice"
