@@ -106,7 +106,7 @@ func NodeGetSlice() *gin.Engine {
 		log.Println("Add data index to cache...")
 		log.Println(Head.Data)
 
-		fileName := "./slices/" + hash + "/" + index + ".slc"
+		fileName := "./slices/" + hash + "/_" + index + ".slc"
 		SaveSlice(cipherStr, fileName)
 		context.String(200, "Get slice")
 	})
@@ -207,6 +207,57 @@ func NodeSendSlice() *gin.Engine {
 		}
 	})
 	return router
+}
+
+func SendSlice(rg *gin.RouterGroup) {
+	router := rg.Group("/userGetSlice")
+	router.POST("/", func(context *gin.Context) {
+		filename := "./slices/" + context.PostForm("filename") + ".slc"
+		file, err := os.Open(filename)
+		defer file.Close()
+		stat, err := file.Stat()
+
+		if err != nil {
+			log.Println(err)
+			context.String(502, "Can not open file")
+		}
+		body := make([]byte, stat.Size())
+		_, err = bufio.NewReader(file).Read(body)
+
+		log.Println(body)
+		if err != nil {
+			log.Println(err)
+			context.String(502, "Can not read file")
+		} else {
+			context.Data(200, "text/plain", body)
+		}
+	})
+}
+
+func SendSliceSm4(rg *gin.RouterGroup) {
+	router := rg.Group("/userGetSliceSM4")
+	router.POST("/", func(context *gin.Context) {
+		index := context.PostForm("index")
+		filename := "./slices/" + context.PostForm("filename") + "/" + index + ".slc"
+		file, err := os.Open(filename)
+		defer file.Close()
+		stat, err := file.Stat()
+
+		if err != nil {
+			log.Println(err)
+			context.String(502, "Can not open file")
+		}
+		body := make([]byte, stat.Size())
+		_, err = bufio.NewReader(file).Read(body)
+
+		log.Println(body)
+		if err != nil {
+			log.Println(err)
+			context.String(502, "Can not read file")
+		} else {
+			context.Data(200, "text/plain", body)
+		}
+	})
 }
 
 func NodeGetQuery(rg *gin.RouterGroup) {

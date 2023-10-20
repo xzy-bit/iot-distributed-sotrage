@@ -214,6 +214,45 @@ func NodeGetIndexWithSplitMat(rg *gin.RouterGroup) {
 	})
 }
 
+//func NodeGetIndexToDB(rg *gin.RouterGroup,db *sql.DB) {
+//	router := rg.Group("/getIndexTo")
+//	router.POST("/", func(context *gin.Context) {
+//
+//		doc_split1 := context.PostForm("doc_split1")
+//		doc_split2 := context.PostForm("doc_split2")
+//		iotId := context.PostForm("iotId")
+//		address := context.PostForm("address")
+//		timeStamp := context.PostForm("timeStamp")
+//
+//		stamp, _ := time.Parse("2006-01-02 15:04:05", timeStamp)
+//
+//		index := SearchIndex{
+//			PatientId: iotId,
+//			TimeStamp: stamp,
+//			Address:   address,
+//		}
+//
+//
+//		DocSplit1:= []byte(doc_split1)
+//		DocSplit2:= []byte(doc_split2)
+//
+//
+//		table = append(table, index)
+//		StoreIndex(index)
+//		log.Println("Add index to table...")
+//		BroadcastIndex(index)
+//		log.Println("Broadcasting index to nodes...")
+//
+//
+//		hash := GenerateFileName(index)
+//		fileName := "./indexes/" + hash + ".idx"
+//		log.Println(fileName)
+//		//context.SaveUploadedFile()
+//		SaveJson(indexInfo, fileName)
+//		context.String(200, "Get the IndexWithSplitMat")
+//	})
+//}
+
 func NodeSendSplitMat(rg *gin.RouterGroup) {
 	router := rg.Group("/nodeQuerySplitMat")
 	router.POST("/", func(context *gin.Context) {

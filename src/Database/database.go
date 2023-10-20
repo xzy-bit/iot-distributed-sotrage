@@ -11,7 +11,7 @@ import (
 )
 
 func ConnectDB() *sql.DB {
-	db, err := sql.Open("mysql", "admin:admin@tcp(127.0.0.1:3306)/blockchain")
+	db, err := sql.Open("mysql", "root:root@tcp(127.0.0.1:3306)/blockchain")
 	if err != nil {
 		log.Println(err)
 	}
@@ -53,4 +53,19 @@ func VerifyPassword(db *sql.DB, user *User.Doctor) bool {
 		return false
 	}
 	return true
+}
+
+func AddIndex(db *sql.DB, indexName string, d1 []byte, d2 []byte) {
+	stmt, err := db.Prepare("INSERT into indexes(indexName,p1,p2) values (?,?,?)")
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	_, err = stmt.Exec(indexName, d1, d2)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	defer stmt.Close()
+	return
 }

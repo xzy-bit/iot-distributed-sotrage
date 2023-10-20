@@ -157,8 +157,11 @@ func NodeInit() {
 	tokenRouter := NodeGetToken()
 	go tokenRouter.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForToken))
 
-	nodeSendSlice := NodeSendSlice()
-	go nodeSendSlice.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForSendSlice))
+	router_for_send_slice := gin.Default()
+	v5 := router_for_send_slice.Group("")
+	SendSlice(v5)
+	SendSliceSm4(v5)
+	go router_for_send_slice.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForSendSlice))
 
 	getSliceRouter := NodeGetSlice()
 	go getSliceRouter.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForGetSlice))
