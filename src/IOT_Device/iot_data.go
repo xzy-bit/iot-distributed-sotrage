@@ -221,7 +221,7 @@ func SliceHash(DeviceID string, TimeStamp time.Time, address string) []byte {
 	return Hash
 }
 
-func SendSliceWithSM4(data []byte, nodes []string, password string, portForSlice int) {
+func SendSliceWithSM4(data []byte, nodes []string, password string, portForSlice int) int {
 	var sliceNode [7]string
 
 	for i := 0; i < 7; i++ {
@@ -260,10 +260,10 @@ func SendSliceWithSM4(data []byte, nodes []string, password string, portForSlice
 			}
 			resp, _ := http.PostForm(node+"/slice", body)
 			if resp.StatusCode != 200 {
-				log.Fatal("can not send data to nodes")
+				log.Println("group:", i, "slice:", index, "can not send to ", node)
 			}
 		}
 	}
-	fmt.Println("Slices were successfully sent to nodes")
-
+	fmt.Println("Sending complete")
+	return len(sm4Msg)
 }
