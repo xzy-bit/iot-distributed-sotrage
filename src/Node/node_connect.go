@@ -185,32 +185,6 @@ func NodeGetBlock() *gin.Engine {
 	return router
 }
 
-func NodeSendSlice() *gin.Engine {
-	router := gin.Default()
-	router.POST("userGetSlice", func(context *gin.Context) {
-		filename := "./slices/" + context.PostForm("filename") + ".slc"
-		file, err := os.Open(filename)
-		defer file.Close()
-		stat, err := file.Stat()
-
-		if err != nil {
-			log.Println(err)
-			context.String(502, "Can not open file")
-		}
-		body := make([]byte, stat.Size())
-		_, err = bufio.NewReader(file).Read(body)
-
-		log.Println(body)
-		if err != nil {
-			log.Println(err)
-			context.String(502, "Can not read file")
-		} else {
-			context.Data(200, "text/plain", body)
-		}
-	})
-	return router
-}
-
 func SendSlice(rg *gin.RouterGroup) {
 	router := rg.Group("/userGetSlice")
 	router.POST("/", func(context *gin.Context) {

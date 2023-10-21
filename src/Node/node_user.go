@@ -91,6 +91,7 @@ func NodeUploadPageForUser(rg *gin.RouterGroup) {
 			Features:    features,
 		}
 		IOT_Device.UploadSliceAndIndexWithSplitMat(patient)
+		context.Redirect(200, "/index")
 	})
 }
 
