@@ -159,6 +159,9 @@ func GenerateDocumentVector(subKey []string) *mat.VecDense {
 	n := len(keyWords)
 	data := make([]float64, n+2)
 	for i := range subKey {
+		if subKey[i] == "" {
+			continue
+		}
 		for j := range keyWords {
 			if subKey[i] == keyWords[j] {
 				data[j] = 1

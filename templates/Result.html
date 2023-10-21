@@ -121,30 +121,30 @@
 
     <div class="app-content pt-3 p-md-3 p-lg-4">
         <div class="container-xl">
-            <h1 class="app-page-title">病历上传</h1>
+            <h1 class="app-page-title">病历查询结果</h1>
             <hr class="mb-4">
             <div class="row g-4 settings-section">
                 <div class="col-12 col-md-9">
                     <div class="app-card app-card-settings shadow-sm p-4">
 
                         <div class="app-card-body">
-                            <form class="settings-form" method="post" action="../upload" enctype="multipart/form-data">
+                            <form class="settings-form" method="post" action="../DoctorUpload">
                                 <div class="row g-3">
                                     <div class="col-md-3">
                                         <label class="form-label">姓名</label>
-                                        <input name="patientName" id="name" class="form-control" type="text" placeholder="" required="">
+                                        <output id="name" class="form-control" type="text" placeholder="" value="" required="">1123</output>
                                     </div>
                                     <div class="col-md-2">
                                         <label class="form-label">年龄</label>
-                                        <input name="patientAge" id="age" class="form-control" type="text" placeholder=""  required="">
+                                        <input id="age" class="form-control" type="text" placeholder="" value="" required="">
                                     </div>
                                     <div class="col-md-3">
                                         <label class="form-label">国籍</label>
-                                        <input name="patientCountry"  id="country" class="form-control" type="text" placeholder=""  required="">
+                                        <input id="country" class="form-control" type="text" placeholder="" value="" required="">
                                     </div>
                                     <div class="col-md-3">
                                         <label class="form-label">民族</label>
-                                        <input name="patientNation" id="nation" class="form-control" type="text" placeholder="" required="">
+                                        <input id="nation" class="form-control" type="text" placeholder="" value="" required="">
                                     </div>
                                 </div>
                                 <div class="row g-3">
@@ -152,11 +152,11 @@
                                         <label class="form-label">性别</label>
                                         <br>
                                         <div class="form-check form-check-inline">
-                                            <input id="male" name="sex" class="form-check-input" type="radio" value="男" checked="" required="">
+                                            <input id="male" name="sex" class="form-check-input" type="radio" checked="" required="">
                                             <label class="form-check-label" for="male">男</label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <input id="female" name="sex" class="form-check-input" type="radio" value="女" checked="" required="">
+                                            <input id="female" name="sex" class="form-check-input" type="radio" checked="" required="">
                                             <label class="form-check-label" for="female">女</label>
                                         </div>
                                     </div>
@@ -164,19 +164,19 @@
                                         <label class="form-label">婚姻情况</label>
                                         <br>
                                         <div class="form-check form-check-inline">
-                                            <input id="matched" name="match" class="form-check-input" type="radio" value="已婚" checked="" required="">
+                                            <input id="matched" name="match" class="form-check-input" type="radio" checked="" required="">
                                             <label class="form-check-label" for="matched">已婚</label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <input id="unmatched" name="match" class="form-check-input" type="radio" value="未婚" checked="" required="">
+                                            <input id="unmatched" name="match" class="form-check-input" type="radio" checked="" required="">
                                             <label class="form-check-label" for="unmatched">未婚</label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <input id="loss" name="match" class="form-check-input" type="radio" value="丧偶" checked="" required="">
+                                            <input id="loss" name="match" class="form-check-input" type="radio" checked="" required="">
                                             <label class="form-check-label" for="loss">丧偶</label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <input id="divorce" name="match" class="form-check-input" type="radio" value="离婚" checked="" required="">
+                                            <input id="divorce" name="match" class="form-check-input" type="radio" checked="" required="">
                                             <label class="form-check-label" for="divorce">离婚</label>
                                         </div>
                                     </div>
@@ -184,18 +184,18 @@
                                 <div class="row g-3">
                                     <div class="col-md-6">
                                         <label class="form-label">身份证号</label>
-                                        <input name="idcard" id="identity" class="form-control" type="text" placeholder="" required="">
+                                        <input id="identity" class="form-control" type="text" placeholder="" value="" required="">
                                     </div>
                                     <div class="col-md-3">
                                         <label class="form-label">职业</label>
-                                        <input name="profession" id="career" class="form-control" type="text" placeholder="" required="">
+                                        <input id="career" class="form-control" type="text" placeholder="" value="" required="">
                                     </div>
                                 </div>
 
                                 <div class="row g-3">
                                     <div class="col-md-4">
                                         <label for="time" class="form-label">就诊时间</label>
-                                        <input name="timeStamp" class="form-control" type="datetime-local" id="time"required="required">
+                                        <input class="form-control" type="datetime-local" id="time"required="required">
                                     </div>
                                 </div>
 
@@ -203,13 +203,13 @@
                                 <div class="col-md-8">
                                     <label for="description" class="form-label">症状描述</label>
                                     <div class="input-group">
-                                        <textarea name="description" id="description" class="form-control" aria-label="description" rows="20"></textarea>
+                                        <textarea id="description" class="form-control" aria-label="description" rows="20"></textarea>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <label for="image" class="form-label">医学影像上传</label>
                                     <div class="input-group mb-3">
-                                        <input name="image" type="file" class="form-control" id="image" multiple>
+                                        <input type="file" class="form-control" id="image">
                                         <label class="input-group-text" for="image">上传文件</label>
                                     </div>
                                 </div>
@@ -218,53 +218,54 @@
                                     <div class="col-md-3">
                                         <label for="faculty" class="form-label">科室</label>
                                         <select class="form-select" id="faculty" name="faculties" required="required">
-                                            <option value="内科" selected>内科</option>
-                                            <option value="外科">外科</option>
-                                            <option value="妇产科">妇产科</option>
-                                            <option value="儿科">儿科</option>
-                                            <option value="骨科">骨科</option>
-                                            <option value="皮肤性科">皮肤性科</option>
-                                            <option value="眼科">眼科</option>
-                                            <option value="肿瘤科">肿瘤科</option>
+                                            <option value="0" selected></option>
+                                            <option value="1">内科</option>
+                                            <option value="2">外科</option>
+                                            <option value="3">妇产科</option>
+                                            <option value="4">儿科</option>
+                                            <option value="5">骨科</option>
+                                            <option value="6">皮肤性科</option>
+                                            <option value="9">眼科</option>
+                                            <option value="10">肿瘤科</option>
                                         </select>
                                     </div>
 
                                     <div class="col-md-3">
                                         <label for="heart" class="form-label">心脏</label>
-                                        <select class="form-select" id="heart" name="heart">
-                                            <option value="" selected></option>
-                                            <option value="心率失常">心律失常</option>
-                                            <option value="心悸">心悸</option>
-                                            <option value="心力衰竭">心力衰竭</option>
-                                            <option value="高血压">高血压</option>
-                                            <option value="心肌梗死">心肌梗死</option>
+                                        <select class="form-select" id="heart" name="heart" required="required">
+                                            <option value="0" selected></option>
+                                            <option value="1">心律失常</option>
+                                            <option value="2">心悸</option>
+                                            <option value="3">心力衰竭</option>
+                                            <option value="4">高血压</option>
+                                            <option value="5">心肌梗死</option>
                                         </select>
                                     </div>
 
 
                                     <div class="col-md-3">
                                         <label for="heart" class="form-label">呼吸</label>
-                                        <select class="form-select" id="breath" name="breath">
-                                            <option value="" selected></option>
-                                            <option value="咳嗽">咳嗽</option>
-                                            <option value="喘息">喘息</option>
-                                            <option value="胸闷">胸闷</option>
-                                            <option value="呼吸急促">呼吸急促</option>
-                                            <option value="声音嘶哑">声音嘶哑</option>
+                                        <select class="form-select" id="breath" name="breath" required="required">
+                                            <option value="0" selected></option>
+                                            <option value="1">咳嗽</option>
+                                            <option value="2">喘息</option>
+                                            <option value="3">胸闷</option>
+                                            <option value="4">呼吸急促</option>
+                                            <option value="5">声音嘶哑</option>
                                         </select>
                                     </div>
 
                                     <div class="col-md-3">
                                         <label for="belly" class="form-label">腹部</label>
-                                        <select class="form-select" id="belly" name="belly">
-                                            <option value="" selected></option>
-                                            <option value="消化不良">消化不良</option>
-                                            <option value="恶心呕吐">恶心呕吐</option>
-                                            <option value="胃酸回流">胃酸回流</option>
-                                            <option value="腹胀">腹胀</option>
-                                            <option value="便秘">便秘</option>
-                                            <option value="腹痛">腹痛</option>
-                                            <option value="肠道出血">肠道出血</option>
+                                        <select class="form-select" id="belly" name="breath" required="required">
+                                            <option value="0" selected></option>
+                                            <option value="1">消化不良</option>
+                                            <option value="2">恶心呕吐</option>
+                                            <option value="3">胃酸回流</option>
+                                            <option value="4">腹胀</option>
+                                            <option value="5">便秘</option>
+                                            <option value="6">腹痛</option>
+                                            <option value="7">肠道出血</option>
                                         </select>
                                     </div>
                                 </div>
@@ -272,58 +273,58 @@
                                 <div class="row g-3">
                                     <div class="col-md-3">
                                         <label for="limb" class="form-label">四肢</label>
-                                        <select class="form-select" id="limb" name="limbs">
-                                            <option value="" selected></option>
-                                            <option value="四肢疼痛">四肢疼痛</option>
-                                            <option value="关节肿胀">关节肿胀</option>
-                                            <option value="臀部疼痛">臀部疼痛</option>
-                                            <option value="四肢麻木">四肢麻木</option>
-                                            <option value="运动障碍">运动障碍</option>
-                                            <option value="肌肉无力">肌肉无力</option>
+                                        <select class="form-select" id="limb" name="limbs" required="required">
+                                            <option value="0" selected></option>
+                                            <option value="1">四肢疼痛</option>
+                                            <option value="2">关节肿胀</option>
+                                            <option value="3">臀部疼痛</option>
+                                            <option value="4">四肢麻木</option>
+                                            <option value="5">运动障碍</option>
+                                            <option value="6">肌肉无力</option>
                                         </select>
                                     </div>
 
                                     <div class="col-md-3">
                                         <label for="head" class="form-label">头部</label>
-                                        <select class="form-select" id="head" name="head">
-                                            <option value="" selected></option>
-                                            <option value="偏头疼">偏头疼</option>
-                                            <option value="眩晕">眩晕</option>
-                                            <option value="记忆障碍">记忆障碍</option>
-                                            <option value="意识丧失">意识丧失</option>
-                                            <option value="语言障碍">语言障碍</option>
-                                            <option value="癫痫发作">癫痫发作</option>
-                                            <option value="肢体抽搐">肢体抽搐</option>
+                                        <select class="form-select" id="head" name="head" required="required">
+                                            <option value="0" selected></option>
+                                            <option value="1">偏头疼</option>
+                                            <option value="2">眩晕</option>
+                                            <option value="3">记忆障碍</option>
+                                            <option value="4">意识丧失</option>
+                                            <option value="5">语言障碍</option>
+                                            <option value="6">癫痫发作</option>
+                                            <option value="7">肢体抽搐</option>
                                         </select>
                                     </div>
 
 
                                     <div class="col-md-3">
                                         <label for="emotion" class="form-label">精神</label>
-                                        <select class="form-select" id="emotion" name="emotion">
-                                            <option value="" selected></option>
-                                            <option value="持续抑郁">持续抑郁</option>
-                                            <option value="失眠">失眠</option>
-                                            <option value="自杀倾向">自杀倾向</option>
-                                            <option value="焦虑发作">焦虑发作</option>
-                                            <option value="幻听">幻听</option>
-                                            <option value="妄想">妄想</option>
-                                            <option value="思维混乱">思维混乱</option>
-                                            <option value="暴食">暴食</option>
-                                            <option value="节食">节食</option>
-                                            <option value="强迫性思维">强迫性思维</option>
+                                        <select class="form-select" id="emotion" name="emotion" required="required">
+                                            <option value="0" selected></option>
+                                            <option value="1">持续抑郁</option>
+                                            <option value="2">失眠</option>
+                                            <option value="3">自杀念头</option>
+                                            <option value="4">焦虑发作</option>
+                                            <option value="5">幻听</option>
+                                            <option value="6">妄想</option>
+                                            <option value="7">思维混乱</option>
+                                            <option value="8">暴食</option>
+                                            <option value="9">节食</option>
+                                            <option value="10">强迫性思维</option>
                                         </select>
                                     </div>
 
                                     <div class="col-md-3">
                                         <label for="belly" class="form-label">皮肤</label>
-                                        <select class="form-select" id="skin" name="skin">
-                                            <option value="" selected></option>
-                                            <option value="红斑水泡">红斑水泡</option>
-                                            <option value="瘙痒">瘙痒</option>
-                                            <option value="溃疡">溃疡</option>
-                                            <option value="疤痕">疤痕</option>
-                                            <option value="脓液">脓液</option>
+                                        <select class="form-select" id="skin" name="skin" required="required">
+                                            <option value="0" selected></option>
+                                            <option value="1">红斑水泡</option>
+                                            <option value="2">瘙痒</option>
+                                            <option value="3">溃疡</option>
+                                            <option value="4">疤痕</option>
+                                            <option value="5">脓液</option>
                                         </select>
                                     </div>
                                 </div>

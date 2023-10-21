@@ -41,7 +41,7 @@
                         <div class="app-utility-item app-user-dropdown dropdown">
                             <a class="dropdown-toggle" id="user-dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false"><img src="assets/images/user.png" alt="user profile"></a>
                             <ul class="dropdown-menu" aria-labelledby="user-dropdown-toggle">
-                                <li><a class="dropdown-item" href="logout">注销</a></li>
+                                <li><a class="dropdown-item" href="../login">注销</a></li>
                             </ul>
                         </div><!--//app-user-dropdown-->
                     </div><!--//app-utilities-->
@@ -129,44 +129,117 @@
                         <div class="app-card-body">
                             <form class="settings-form" method="post" action="../DoctorSearch?variety=Keywords">
                                 <div class="row g-3">
-                                    <label for="faculty" class="form-label">科室</label>
-                                    <select class="form-select" id="faculty" name="faculties" required="required">
-                                        <option value="0" selected></option>
-                                        <option value="精神科">精神科</option>
-                                        <option value="肿瘤科">肿瘤科</option>
-                                    </select>
+                                    <div class="col-md-3">
+                                        <label for="faculty" class="form-label">科室</label>
+                                        <select class="form-select" id="faculty" name="faculties" required="required">
+                                            <option value="0" selected></option>
+                                            <option value="1">内科</option>
+                                            <option value="2">外科</option>
+                                            <option value="3">妇产科</option>
+                                            <option value="4">儿科</option>
+                                            <option value="5">骨科</option>
+                                            <option value="6">皮肤性科</option>
+                                            <option value="9">眼科</option>
+                                            <option value="10">肿瘤科</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <label for="heart" class="form-label">心脏</label>
+                                        <select class="form-select" id="heart" name="heart" required="required">
+                                            <option value="0" selected></option>
+                                            <option value="1">心律失常</option>
+                                            <option value="2">心悸</option>
+                                            <option value="3">心力衰竭</option>
+                                            <option value="4">高血压</option>
+                                            <option value="5">心肌梗死</option>
+                                        </select>
+                                    </div>
+
+
+                                    <div class="col-md-3">
+                                        <label for="heart" class="form-label">呼吸</label>
+                                        <select class="form-select" id="breath" name="breath" required="required">
+                                            <option value="0" selected></option>
+                                            <option value="1">咳嗽</option>
+                                            <option value="2">喘息</option>
+                                            <option value="3">胸闷</option>
+                                            <option value="4">呼吸急促</option>
+                                            <option value="5">声音嘶哑</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <label for="belly" class="form-label">腹部</label>
+                                        <select class="form-select" id="belly" name="breath" required="required">
+                                            <option value="0" selected></option>
+                                            <option value="1">消化不良</option>
+                                            <option value="2">恶心呕吐</option>
+                                            <option value="3">胃酸回流</option>
+                                            <option value="4">腹胀</option>
+                                            <option value="5">便秘</option>
+                                            <option value="6">腹痛</option>
+                                            <option value="7">肠道出血</option>
+                                        </select>
+                                    </div>
                                 </div>
-                                <div class="col-md-9">
-                                    <label class="form-label">症状关键字</label>
-                                    <div class="form-check-inline">
-                                        <input class="form-check-input " type="checkbox" name="features" value="心律不齐" id="feature1">
-                                        <label class="form-label" for="feature1">心率不齐</label>
-                                        <input class="form-check-input " type="checkbox" name="features" value="食欲不振" id="feature2">
-                                        <label class="form-label" for="feature2">食欲不振</label>
-                                        <input class="form-check-input " type="checkbox" name="features" value="消化不良" id="feature3">
-                                        <label class="form-label" for="feature3">消化不良</label>
-                                        <input class="form-check-input " type="checkbox" name="features" value="呼吸急促" id="feature4">
-                                        <label class="form-label" for="feature4">呼吸急促</label>
-                                        <input class="form-check-input " type="checkbox" name="features" value="头昏发热" id="feature5">
-                                        <label class="form-label" for="feature5">头昏发热</label>
-                                        <input class="form-check-input " type="checkbox" name="features" value="恶心呕吐" id="feature6">
-                                        <label class="form-label" for="feature6">恶心呕吐</label>
-                                        <input class="form-check-input " type="checkbox" name="features" value="吞咽困难" id="feature7">
-                                        <label class="form-label" for="feature7">吞咽困难</label>
-                                        <input class="form-check-input " type="checkbox" name="features" value="腰腿酸痛" id="feature8">
-                                        <label class="form-label" for="feature8">腰腿酸痛</label>
-                                        <input class="form-check-input " type="checkbox" name="features" value="恶寒鼻塞" id="feature9">
-                                        <label class="form-label" for="feature9">恶寒鼻塞</label>
-                                        <input class="form-check-input " type="checkbox" name="features" value="四肢乏力" id="feature10">
-                                        <label class="form-label" for="feature10">四肢乏力</label>
-                                        <input class="form-check-input " type="checkbox" name="features" value="test1" id="feature11">
-                                        <label class="form-label" for="feature7">test1</label>
-                                        <input class="form-check-input " type="checkbox" name="features" value="test2" id="feature12">
-                                        <label class="form-label" for="feature8">test2</label>
-                                        <input class="form-check-input " type="checkbox" name="features" value="test3" id="feature13">
-                                        <label class="form-label" for="feature9">test3</label>
-                                        <input class="form-check-input " type="checkbox" name="features" value="test4" id="feature14">
-                                        <label class="form-label" for="feature10">test4</label>
+
+                                <div class="row g-3">
+                                    <div class="col-md-3">
+                                        <label for="limb" class="form-label">四肢</label>
+                                        <select class="form-select" id="limb" name="limbs" required="required">
+                                            <option value="0" selected></option>
+                                            <option value="1">四肢疼痛</option>
+                                            <option value="2">关节肿胀</option>
+                                            <option value="3">臀部疼痛</option>
+                                            <option value="4">四肢麻木</option>
+                                            <option value="5">运动障碍</option>
+                                            <option value="6">肌肉无力</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <label for="head" class="form-label">头部</label>
+                                        <select class="form-select" id="head" name="head" required="required">
+                                            <option value="0" selected></option>
+                                            <option value="1">偏头疼</option>
+                                            <option value="2">眩晕</option>
+                                            <option value="3">记忆障碍</option>
+                                            <option value="4">意识丧失</option>
+                                            <option value="5">语言障碍</option>
+                                            <option value="6">癫痫发作</option>
+                                            <option value="7">肢体抽搐</option>
+                                        </select>
+                                    </div>
+
+
+                                    <div class="col-md-3">
+                                        <label for="emotion" class="form-label">精神</label>
+                                        <select class="form-select" id="emotion" name="emotion" required="required">
+                                            <option value="0" selected></option>
+                                            <option value="1">持续抑郁</option>
+                                            <option value="2">失眠</option>
+                                            <option value="3">自杀念头</option>
+                                            <option value="4">焦虑发作</option>
+                                            <option value="5">幻听</option>
+                                            <option value="6">妄想</option>
+                                            <option value="7">思维混乱</option>
+                                            <option value="8">暴食</option>
+                                            <option value="9">节食</option>
+                                            <option value="10">强迫性思维</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <label for="belly" class="form-label">皮肤</label>
+                                        <select class="form-select" id="skin" name="skin" required="required">
+                                            <option value="0" selected></option>
+                                            <option value="1">红斑水泡</option>
+                                            <option value="2">瘙痒</option>
+                                            <option value="3">溃疡</option>
+                                            <option value="4">疤痕</option>
+                                            <option value="5">脓液</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <br>

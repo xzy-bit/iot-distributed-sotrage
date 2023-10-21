@@ -301,7 +301,7 @@ func NodeQuerySlice(address string, hash []byte) []byte {
 }
 
 func NodeQueryDataForUSer(rg *gin.RouterGroup) {
-	var patient IOT_Device.Patient
+	var patient IOT_Device.Patient_Test
 	router := rg.Group("/queryForUser")
 	router.POST("/", func(context *gin.Context) {
 		log.Println("Receive query request")

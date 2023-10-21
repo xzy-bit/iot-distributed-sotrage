@@ -70,9 +70,9 @@ import (
 //	return true
 //}
 
-func QueryData(node string, startTime string, endTime string, port int) []IOT_Device.Patient {
-	var patient IOT_Device.Patient
-	var patients []IOT_Device.Patient
+func QueryData(node string, startTime string, endTime string, port int) []IOT_Device.Patient_Test {
+	var patient IOT_Device.Patient_Test
+	var patients []IOT_Device.Patient_Test
 	file, _ := os.Open("public.pem")
 	iotId := IOT_Device.GenerateIotId(file)
 	println(iotId)
