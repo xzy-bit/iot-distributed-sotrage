@@ -48,7 +48,7 @@ func TestSliceAndEncryptWithFixedPara(t *testing.T) {
 		StuId: 1748526,
 	}
 
-	p := GenerateModNum(128)
+	p := GenerateModNum(136)
 	fmt.Println(p.String())
 	stuInfo, _ := json.Marshal(stu)
 

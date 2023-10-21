@@ -267,6 +267,7 @@ func SendSliceWithSM4(data []byte, nodes []string, password string, portForSlice
 
 	padding := SM4.PaddingWithBytes(data)
 	sm4Msg := SM4.EncryptWithPadding(padding, password)
+	//fmt.Println(SM4.WithdrawPadding(SM4.DecryptWithPadding(sm4Msg, password)))
 	matrix := Secret_Share.MatrixInit()
 
 	file, _ := os.Open("public.pem")
@@ -283,9 +284,13 @@ func SendSliceWithSM4(data []byte, nodes []string, password string, portForSlice
 	}
 	modNum := Secret_Share.FixedPara()
 
+	//var test [][]byte
 	for i := 0; i < len(sm4Msg); i++ {
-
 		ciphertext, p := Secret_Share.SliceAndEncryptWithFixedPara(matrix, sm4Msg[i], modNum)
+		//choice := []int{0, 1, 2, 3}
+		//msg := Secret_Share.ResotreMsg(ciphertext, *modNum, choice)
+		//test = append(test, msg)
+
 		for index, node := range sliceNode {
 			body := url.Values{
 				"cipher":       {ciphertext[index].String()},
@@ -304,6 +309,7 @@ func SendSliceWithSM4(data []byte, nodes []string, password string, portForSlice
 		}
 	}
 	fmt.Println("Sending complete")
+
 	return len(sm4Msg)
 }
 

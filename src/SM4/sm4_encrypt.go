@@ -53,7 +53,7 @@ func EncryptWithPadding(data []byte, password string) [][]byte {
 	var output [][]byte
 	key := GenerateSM4Key(password)
 	length := len(data)
-	numOfGroup := length / 64
+	numOfGroup := length/64 + 1
 	result, _ := sm4.Sm4Cbc(key, data, true)
 	for i := 0; i < numOfGroup; i++ {
 		if i == numOfGroup-1 {

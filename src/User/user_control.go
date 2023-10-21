@@ -3,6 +3,7 @@ package User
 import (
 	"IOT_Storage/src/Block_Chain"
 	"IOT_Storage/src/IOT_Device"
+	"IOT_Storage/src/SM4"
 	"IOT_Storage/src/SearchableEncrypt"
 	"IOT_Storage/src/Secret_Share"
 	"encoding/hex"
@@ -130,71 +131,100 @@ func QueryData(node string, startTime string, endTime string, port int) []IOT_De
 	return patients
 }
 
-//func QueryDataWithSM4(node string, startTime string, endTime string, numOfGroup int, password string) [][]byte {
-//	file, _ := os.Open("public.pem")
-//	iotId := IOT_Device.GenerateIotId(file)
-//	println(iotId)
-//	defer file.Close()
-//	body := url.Values{
-//		"iotId":     {iotId},
-//		"startTime": {startTime},
-//		"endTime":   {endTime},
-//	}
-//	resp, _ := http.PostForm(node+"/query", body)
-//	if resp.StatusCode != 200 {
-//		log.Fatal("can not send query to nodes")
-//	}
-//	data, err := ioutil.ReadAll(resp.Body)
-//	//resp.Body = ioutil.NopCloser(bytes.NewBuffer(data))
-//	if err != nil {
-//		log.Fatal("can not get the data")
-//	}
-//
-//	var indexes []Block_Chain.DATA
-//	json.Unmarshal(data, &indexes)
-//
-//	for i := 0; i < len(indexes); i++ {
-//		fmt.Println(indexes[i])
-//	}
-//
-//	for j := 0; j < numOfGroup; j++ {
-//		for i := 0; i < len(indexes); i += 7 {
-//			count := 0
-//			var cipher []*big.Int
-//			var p big.Int
-//			var choice []int
-//			p = *indexes[i].ModNum
-//			for j := 0; j < 7; j++ {
-//				temp := strings.Split(indexes[i+j].StoreOn, ":")
-//				trueUrl := temp[0] + ":" + temp[1] + ":" + strconv.Itoa(port+j) + "/userGetSlice"
-//				slice := UserGetSlice(trueUrl, indexes[i+j].Hash)
-//				//fmt.Println(slice)
-//				if len(slice) == 0 {
-//					fmt.Printf("Can not get slice from %s\n", trueUrl)
-//				} else {
-//					choice = append(choice, indexes[i+j].Serial)
-//					num := big.NewInt(1)
-//					num.SetString(string(slice), 10)
-//					//fmt.Println(num)
-//					cipher = append(cipher, num)
-//					//cipher = append(cipher)
-//					count++
-//				}
-//				if count == 4 {
-//					break
-//				}
-//			}
-//		}
-//	}
-//
-//	fmt.Println("End of data querying!")
-//	return nil
-//}
+func QueryDataWithSM4(node string, startTime string, endTime string, numOfGroup int, port int, password string) [][]byte {
+	var msg [][]byte
+	file, _ := os.Open("public.pem")
+	iotId := IOT_Device.GenerateIotId(file)
+	println(iotId)
+	defer file.Close()
+	body := url.Values{
+		"iotId":     {iotId},
+		"startTime": {startTime},
+		"endTime":   {endTime},
+	}
+	resp, _ := http.PostForm(node+"/query", body)
+	if resp.StatusCode != 200 {
+		log.Fatal("can not send query to nodes")
+	}
+	data, err := ioutil.ReadAll(resp.Body)
+	//resp.Body = ioutil.NopCloser(bytes.NewBuffer(data))
+	if err != nil {
+		log.Fatal("can not get the data")
+	}
+
+	var indexes []Block_Chain.DATA
+	json.Unmarshal(data, &indexes)
+
+	//for i := 0; i < len(indexes); i++ {
+	//	fmt.Println(indexes[i])
+	//}
+	p := indexes[0].ModNum
+	fmt.Println(p.String())
+	for k := 0; k < numOfGroup; k++ {
+		for i := 0; i < len(indexes); i += 7 {
+			count := 0
+			var cipher []*big.Int
+			var choice []int
+			for j := 0; j < 7; j++ {
+				temp := strings.Split(indexes[i+j].StoreOn, ":")
+				trueUrl := temp[0] + ":" + temp[1] + ":" + strconv.Itoa(port+j) + "/userGetSlice"
+				indexOfGroup := strconv.Itoa(k)
+				slice := UserGetSliceWithSM4(trueUrl, indexes[i+j].Hash, indexOfGroup)
+				//fmt.Println(slice)
+				if len(slice) == 0 {
+					fmt.Printf("Can not get slice from %s\n", trueUrl)
+				} else {
+					choice = append(choice, indexes[i+j].Serial)
+					num := big.NewInt(1)
+					num.SetString(string(slice), 10)
+					cipher = append(cipher, num)
+					count++
+				}
+				if count == 4 {
+					msgBytes := Secret_Share.ResotreMsg(cipher, *p, choice)
+					if len(msgBytes) < 64 && k != numOfGroup-1 {
+						padding := make([]byte, 64-len(msgBytes))
+						msgBytes = SM4.BytesCombine(padding, msgBytes)
+					}
+					msg = append(msg, msgBytes)
+					//fmt.Println(msgBytes)
+					break
+				}
+			}
+		}
+	}
+	fmt.Println("End of data querying!")
+	//final := SM4.DecryptWithPadding(msg, "123456")
+	//finalFile, _ := os.OpenFile("final.jpg", os.O_RDWR|os.O_CREATE, 0755)
+
+	//defer finalFile.Close()
+	//fmt.Println(final)
+	//plain := SM4.WithdrawPadding(final)
+	//fmt.Println(plain)
+	//finalFile.Write(plain)
+	return msg
+}
 
 func UserGetSlice(address string, hash []byte) []byte {
 
 	body := url.Values{
 		"filename": {hex.EncodeToString(hash)},
+	}
+	resp, _ := http.PostForm(address, body)
+	if resp.StatusCode == 200 {
+		data, _ := ioutil.ReadAll(resp.Body)
+		resp.Body.Close()
+		return data
+	} else {
+		log.Println("Can not get the file")
+		return []byte{}
+	}
+}
+
+func UserGetSliceWithSM4(address string, hash []byte, index string) []byte {
+
+	body := url.Values{
+		"filename": {hex.EncodeToString(hash) + "/" + index},
 	}
 	resp, _ := http.PostForm(address, body)
 	if resp.StatusCode == 200 {

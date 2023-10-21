@@ -6,7 +6,7 @@ import (
 )
 
 func FixedPara() *big.Int {
-	num := "340282366920938463463374607431768211507"
+	num := "87112285931760246646623899502532662132821"
 	var p big.Int
 	p.SetString(num, 10)
 	return &p
