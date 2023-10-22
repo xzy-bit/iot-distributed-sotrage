@@ -175,6 +175,7 @@ func UploadSliceAndIndexWithSplitMat(patient Patient) {
 		}
 	}
 	fmt.Println("Sending complete")
+	fmt.Println("NumOfGroup:", len(sm4Msg))
 	fmt.Println("Indexes and slices were successfully sent to nodes")
 }
 

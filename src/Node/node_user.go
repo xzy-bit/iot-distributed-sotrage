@@ -91,7 +91,7 @@ func NodeUploadPageForUser(rg *gin.RouterGroup) {
 			Features:    features,
 		}
 		IOT_Device.UploadSliceAndIndexWithSplitMat(patient)
-		context.Redirect(200, "/index")
+		context.Redirect(200, "../index")
 	})
 }
 
@@ -179,5 +179,21 @@ func NodeResultPageForUser(rg *gin.RouterGroup) {
 	router.Static("/assets", "./resources/webapp/assets")
 	router.GET("/", func(context *gin.Context) {
 		context.HTML(200, "Result.html", gin.H{})
+	})
+}
+
+func NodeSearchResultForUser(rg *gin.RouterGroup) {
+	router := rg.Group("/searchresult")
+	router.Static("/assets", "./resources/webapp/assets")
+	router.GET("/", func(context *gin.Context) {
+		context.HTML(200, "SearchResult.html", gin.H{})
+	})
+}
+
+func NodeSearchResultByKeyWords(rg *gin.RouterGroup) {
+	router := rg.Group("/searchresultByKeyWords")
+	router.Static("/assets", "./resources/webapp/assets")
+	router.GET("/", func(context *gin.Context) {
+		context.HTML(200, "SearchResultKeyWords.html", gin.H{})
 	})
 }

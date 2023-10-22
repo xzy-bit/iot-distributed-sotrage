@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>电子病历系统</title>
+
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description" content="Portal - Bootstrap 5 Admin Dashboard Template For Developers">
+    <meta name="author" content="Xiaoying Riley at 3rd Wave Media">
+    <link rel="shortcut icon" href="favicon.ico">
+
+    <!-- FontAwesome JS-->
+    <script defer src="assets/plugins/fontawesome/js/all.min.js"></script>
+
+    <!-- App CSS -->
+    <link id="theme-style" rel="stylesheet" href="assets/css/portal.css">
+
+</head>
+
+<body class="app">
+<header class="app-header fixed-top">
+    <div class="app-header-inner">
+        <div class="container-fluid py-2">
+            <div class="app-header-content">
+                <div class="row justify-content-between align-items-center">
+
+                    <div class="col-auto">
+                        <a id="sidepanel-toggler" class="sidepanel-toggler d-inline-block d-xl-none" href="#">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" role="img"><title>Menu</title><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg>
+                        </a>
+                    </div><!--//col-->
+                    <div class="search-mobile-trigger d-sm-none col">
+                        <i class="search-mobile-trigger-icon fas fa-search"></i>
+                    </div><!--//col-->
+
+
+                    <div class="app-utilities col-auto">
+                        <div class="app-utility-item app-user-dropdown dropdown">
+                            <a class="dropdown-toggle" id="user-dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false"><img src="assets/images/user.png" alt="user profile"></a>
+                            <ul class="dropdown-menu" aria-labelledby="user-dropdown-toggle">
+                                <li><a class="dropdown-item" href="../login">注销</a></li>
+                            </ul>
+                        </div><!--//app-user-dropdown-->
+                    </div><!--//app-utilities-->
+                </div><!--//row-->
+            </div><!--//app-header-content-->
+        </div><!--//container-fluid-->
+    </div><!--//app-header-inner-->
+    <div id="app-sidepanel" class="app-sidepanel">
+        <div id="sidepanel-drop" class="sidepanel-drop"></div>
+        <div class="sidepanel-inner d-flex flex-column">
+            <a href="#" id="sidepanel-close" class="sidepanel-close d-xl-none">&times;</a>
+            <div class="app-branding">
+                <a class="app-logo" href="../index"><img class="logo-icon me-2" src="assets/images/app-logo.svg" alt="logo"><span class="logo-text">PORTAL</span></a>
+
+            </div><!--//app-branding-->
+
+            <nav id="app-nav-main" class="app-nav app-nav-main flex-grow-1">
+                <ul class="app-menu list-unstyled accordion" id="menu-accordion">
+                    <li class="nav-item">
+                        <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+                        <a class="nav-link" href="../index">
+						        <span class="nav-icon">
+						        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-house-door" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+		  <path fill-rule="evenodd" d="M7.646 1.146a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 .146.354v7a.5.5 0 0 1-.5.5H9.5a.5.5 0 0 1-.5-.5v-4H7v4a.5.5 0 0 1-.5.5H2a.5.5 0 0 1-.5-.5v-7a.5.5 0 0 1 .146-.354l6-6zM2.5 7.707V14H6v-4a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5v4h3.5V7.707L8 2.207l-5.5 5.5z"/>
+		  <path fill-rule="evenodd" d="M13 2.5V6l-2-2V2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5z"/>
+		</svg>
+						         </span>
+                            <span class="nav-link-text">主页</span>
+                        </a><!--//nav-link-->
+                    </li><!--//nav-item-->
+                    <li class="nav-item">
+                        <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+                        <a class="nav-link" href="../upload">
+						        <span class="nav-icon">
+						        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-card-list" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+  <path fill-rule="evenodd" d="M14.5 3h-13a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13z"/>
+  <path fill-rule="evenodd" d="M5 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 5 8zm0-2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0 5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5z"/>
+  <circle cx="3.5" cy="5.5" r=".5"/>
+  <circle cx="3.5" cy="8" r=".5"/>
+  <circle cx="3.5" cy="10.5" r=".5"/>
+</svg>
+						         </span>
+                            <span class="nav-link-text">病历上传</span>
+                        </a><!--//nav-link-->
+                    </li><!--//nav-item-->
+                    <li class="nav-item has-submenu">
+                        <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+                        <a class="nav-link submenu-toggle" href="#" data-bs-toggle="collapse" data-bs-target="#submenu-1" aria-expanded="false" aria-controls="submenu-1">
+						        <span class="nav-icon">
+						        <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+						        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-files" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+	  <path fill-rule="evenodd" d="M4 2h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm0 1a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H4z"/>
+	  <path d="M6 0h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2v-1a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H6a1 1 0 0 0-1 1H4a2 2 0 0 1 2-2z"/>
+	</svg>
+						         </span>
+                            <span class="nav-link-text">病历查询</span>
+                            <span class="submenu-arrow">
+		                             <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-down" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+	  <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+	</svg>
+	                             </span><!--//submenu-arrow-->
+                        </a><!--//nav-link-->
+                        <div id="submenu-1" class="collapse submenu submenu-1" data-bs-parent="#menu-accordion">
+                            <ul class="submenu-list list-unstyled">
+                                <li class="submenu-item"><a class="submenu-link active" href="../search?variety=Identity">身份证查询</a></li>
+                                <li class="submenu-item"><a class="submenu-link" href="../search?variety=Keywords">关键字查询</a></li>
+                            </ul>
+                        </div>
+                    </li><!--//nav-item-->
+                </ul><!--//app-menu-->
+            </nav><!--//app-nav-->
+        </div><!--//sidepanel-inner-->
+    </div><!--//app-sidepanel-->
+</header><!--//app-header-->
+
+<div class="app-wrapper">
+
+    <div class="app-content pt-3 p-md-3 p-lg-4">
+        <div class="container-xl">
+            <h1 class="app-page-title">查询结果</h1>
+            <hr class="mb-4">
+            <div class="row g-4 settings-section">
+                <div class="col-12 col-md-9">
+                    <div class="app-card app-card-settings shadow-sm p-4">
+
+                        <div class="app-card-body">
+                            <form class="settings-form" method="post" action="../upload" enctype="multipart/form-data">
+                                <div class="row g-3">
+                                    <div class="col-md-3">
+                                        <label class="form-label">姓名</label>
+                                        <input name="patientName" id="name" class="form-control" type="text" placeholder="黎林" required="">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label">年龄</label>
+                                        <input name="patientAge" id="age" class="form-control" type="text" placeholder="15"  required="">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">国籍</label>
+                                        <input name="patientCountry"  id="country" class="form-control" type="text" placeholder="中国"  required="">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">民族</label>
+                                        <input name="patientNation" id="nation" class="form-control" type="text" placeholder="汉族" required="">
+                                    </div>
+                                </div>
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <label class="form-label">性别</label>
+                                        <br>
+                                        <div class="form-check form-check-inline">
+                                            <input id="male" name="sex" class="form-check-input" type="radio" value="男" checked="checked" required="">
+                                            <label class="form-check-label" for="male">男</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input id="female" name="sex" class="form-check-input" type="radio" value="女" checked="" required="">
+                                            <label class="form-check-label" for="female">女</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <label class="form-label">婚姻情况</label>
+                                        <br>
+                                        <div class="form-check form-check-inline">
+                                            <input id="matched" name="match" class="form-check-input" type="radio" value="已婚" checked="" required="">
+                                            <label class="form-check-label" for="matched">已婚</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input id="unmatched" name="match" class="form-check-input" type="radio" value="未婚" checked="checked" required="">
+                                            <label class="form-check-label" for="unmatched">未婚</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input id="loss" name="match" class="form-check-input" type="radio" value="丧偶" checked="" required="">
+                                            <label class="form-check-label" for="loss">丧偶</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input id="divorce" name="match" class="form-check-input" type="radio" value="离婚" checked="" required="">
+                                            <label class="form-check-label" for="divorce">离婚</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">身份证号</label>
+                                        <input name="idcard" id="identity" class="form-control" type="text" placeholder="18499584516" required="">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">职业</label>
+                                        <input name="profession" id="career" class="form-control" type="text" placeholder="无" required="">
+                                    </div>
+                                </div>
+
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <label for="time" class="form-label">就诊时间</label>
+                                        <input name="timeStamp" class="form-control" type="datetime-local" id="time" placeholder="2023-10-22Z00:28" required="">
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-8">
+                                    <label for="description" class="form-label">症状描述</label>
+                                    <div class="input-group">
+                                        <textarea name="description" id="description" class="form-control" aria-label="description" rows="20"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="image" class="form-label">医学影像上传</label>
+                                    <div class="input-group mb-3">
+                                        <input name="image" type="file" class="form-control" id="image" multiple>
+                                        <label class="input-group-text" for="image">上传文件</label>
+                                    </div>
+                                </div>
+
+                                <div class="row g-3">
+                                    <div class="col-md-3">
+                                        <label for="faculty" class="form-label">科室</label>
+                                        <select class="form-select" id="faculty" name="faculties" required="required">
+                                            <option value="内科" selected>内科</option>
+                                            <option value="外科">外科</option>
+                                            <option value="妇产科">妇产科</option>
+                                            <option value="儿科">儿科</option>
+                                            <option value="骨科">骨科</option>
+                                            <option value="皮肤性科">皮肤性科</option>
+                                            <option value="眼科">眼科</option>
+                                            <option value="肿瘤科">肿瘤科</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <label for="heart" class="form-label">心脏</label>
+                                        <select class="form-select" id="heart" name="heart">
+                                            <option value="" selected></option>
+                                            <option value="心率失常">心律失常</option>
+                                            <option value="心悸">心悸</option>
+                                            <option value="心力衰竭">心力衰竭</option>
+                                            <option value="高血压">高血压</option>
+                                            <option value="心肌梗死">心肌梗死</option>
+                                        </select>
+                                    </div>
+
+
+                                    <div class="col-md-3">
+                                        <label for="heart" class="form-label">呼吸</label>
+                                        <select class="form-select" id="breath" name="breath">
+                                            <option value="" selected></option>
+                                            <option value="咳嗽">咳嗽</option>
+                                            <option value="喘息">喘息</option>
+                                            <option value="胸闷">胸闷</option>
+                                            <option value="呼吸急促">呼吸急促</option>
+                                            <option value="声音嘶哑">声音嘶哑</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <label for="belly" class="form-label">腹部</label>
+                                        <select class="form-select" id="belly" name="belly">
+                                            <option value="" selected></option>
+                                            <option value="消化不良">消化不良</option>
+                                            <option value="恶心呕吐">恶心呕吐</option>
+                                            <option value="胃酸回流">胃酸回流</option>
+                                            <option value="腹胀">腹胀</option>
+                                            <option value="便秘">便秘</option>
+                                            <option value="腹痛">腹痛</option>
+                                            <option value="肠道出血">肠道出血</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="row g-3">
+                                    <div class="col-md-3">
+                                        <label for="limb" class="form-label">四肢</label>
+                                        <select class="form-select" id="limb" name="limbs">
+                                            <option value="" selected></option>
+                                            <option value="四肢疼痛">四肢疼痛</option>
+                                            <option value="关节肿胀">关节肿胀</option>
+                                            <option value="臀部疼痛">臀部疼痛</option>
+                                            <option value="四肢麻木">四肢麻木</option>
+                                            <option value="运动障碍">运动障碍</option>
+                                            <option value="肌肉无力">肌肉无力</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <label for="head" class="form-label">头部</label>
+                                        <select class="form-select" id="head" name="head">
+                                            <option value="" selected></option>
+                                            <option value="偏头疼">偏头疼</option>
+                                            <option value="眩晕">眩晕</option>
+                                            <option value="记忆障碍">记忆障碍</option>
+                                            <option value="意识丧失">意识丧失</option>
+                                            <option value="语言障碍">语言障碍</option>
+                                            <option value="癫痫发作">癫痫发作</option>
+                                            <option value="肢体抽搐">肢体抽搐</option>
+                                        </select>
+                                    </div>
+
+
+                                    <div class="col-md-3">
+                                        <label for="emotion" class="form-label">精神</label>
+                                        <select class="form-select" id="emotion" name="emotion">
+                                            <option value="" selected></option>
+                                            <option value="持续抑郁">持续抑郁</option>
+                                            <option value="失眠">失眠</option>
+                                            <option value="自杀倾向">自杀倾向</option>
+                                            <option value="焦虑发作">焦虑发作</option>
+                                            <option value="幻听">幻听</option>
+                                            <option value="妄想">妄想</option>
+                                            <option value="思维混乱">思维混乱</option>
+                                            <option value="暴食">暴食</option>
+                                            <option value="节食">节食</option>
+                                            <option value="强迫性思维">强迫性思维</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <label for="belly" class="form-label">皮肤</label>
+                                        <select class="form-select" id="skin" name="skin">
+                                            <option value="" selected></option>
+                                            <option value="红斑水泡">红斑水泡</option>
+                                            <option value="瘙痒">瘙痒</option>
+                                            <option value="溃疡">溃疡</option>
+                                            <option value="疤痕">疤痕</option>
+                                            <option value="脓液">脓液</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </form>
+                        </div><!--//app-card-body-->
+                    </div><!--//app-card-->
+                </div>
+            </div><!--//row-->
+            <hr class="my-4">
+        </div><!--//container-fluid-->
+    </div>
+
+</div><!--//app-wrapper-->
+
+
+<!-- Javascript -->
+<script src="assets/plugins/popper.min.js"></script>
+<script src="assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+
+<!-- Charts JS -->
+<script src="assets/plugins/chart.js/chart.min.js"></script>
+<script src="assets/js/index-charts.js"></script>
+
+<!-- Page Specific JS -->
+<script src="assets/js/app.js"></script>
+
+</body>
+</html>
+
