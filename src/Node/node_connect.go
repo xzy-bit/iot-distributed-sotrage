@@ -96,14 +96,14 @@ func NodeGetSlice() *gin.Engine {
 		iotId := context.PostForm("iotId")
 		serialStr := context.PostForm("serial")
 		address := context.PostForm("address")
-		modNumStr := context.PostForm("modNum")
+		numOfGroup := context.PostForm("numOfGroup")
 		timeStamp := context.PostForm("timeStamp")
 		hash := context.PostForm("hash")
 		index := context.PostForm("indexOfGroup")
 
 		num, _ := strconv.Atoi(index)
 
-		dataIndex := GenerateDATA(iotId, serialStr, address, modNumStr, timeStamp, hash, num)
+		dataIndex := GenerateDATA(iotId, serialStr, address, numOfGroup, timeStamp, hash, num)
 		AddDataToCache(dataIndex)
 		log.Println("Add data index to cache...")
 		log.Println(Head.Data)
@@ -288,13 +288,12 @@ func NodeQueryDataForUSer(rg *gin.RouterGroup) {
 
 		indexes := File_Index.QueryData(tree, iotId, start, end)
 
+		p := Secret_Share.FixedPara()
 		port := 9000
 		for i := 0; i < len(indexes); i += 7 {
 			count := 0
 			var cipher []*big.Int
-			var p big.Int
 			var choice []int
-			p = *indexes[i].ModNum
 			for j := 0; j < 7; j++ {
 				temp := strings.Split(indexes[i+j].StoreOn, ":")
 				trueUrl := temp[0] + ":" + temp[1] + ":" + strconv.Itoa(port+j) + "/userGetSlice"
@@ -312,7 +311,7 @@ func NodeQueryDataForUSer(rg *gin.RouterGroup) {
 					count++
 				}
 				if count == 4 {
-					msgBytes := Secret_Share.ResotreMsg(cipher, p, choice)
+					msgBytes := Secret_Share.ResotreMsg(cipher, *p, choice)
 					json.Unmarshal(msgBytes, &patient)
 					break
 				}

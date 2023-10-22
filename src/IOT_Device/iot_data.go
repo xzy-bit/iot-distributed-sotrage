@@ -155,12 +155,13 @@ func UploadSliceAndIndexWithSplitMat(patient Patient) {
 	}
 	modNum := Secret_Share.FixedPara()
 
-	for i := 0; i < len(sm4Msg); i++ {
-		ciphertext, p := Secret_Share.SliceAndEncryptWithFixedPara(matrix, sm4Msg[i], modNum)
+	numOfGroup := len(sm4Msg)
+	for i := 0; i < numOfGroup; i++ {
+		ciphertext, _ := Secret_Share.SliceAndEncryptWithFixedPara(matrix, sm4Msg[i], modNum)
 		for index, node := range sliceNode {
 			body := url.Values{
 				"cipher":       {ciphertext[index].String()},
-				"modNum":       {p.String()},
+				"numOfGroup":   {strconv.Itoa(numOfGroup)},
 				"iotId":        {iotId},
 				"serial":       {strconv.Itoa(index)},
 				"address":      {node},
@@ -175,7 +176,7 @@ func UploadSliceAndIndexWithSplitMat(patient Patient) {
 		}
 	}
 	fmt.Println("Sending complete")
-	fmt.Println("NumOfGroup:", len(sm4Msg))
+	fmt.Println("NumOfGroup:", numOfGroup)
 	fmt.Println("Indexes and slices were successfully sent to nodes")
 }
 

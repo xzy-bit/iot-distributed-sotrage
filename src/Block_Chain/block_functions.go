@@ -72,7 +72,6 @@ func DataHash(data *DATA) {
 		[]byte(data.DeviceID),
 		[]byte(data.TimeStamp.String()),
 		[]byte(data.StoreOn),
-		data.ModNum.Bytes(),
 	}, []byte{})
 	hash := sha256.Sum256(info)
 	data.Hash = hash[:]

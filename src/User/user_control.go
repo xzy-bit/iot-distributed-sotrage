@@ -96,12 +96,11 @@ func QueryData(node string, startTime string, endTime string, port int) []IOT_De
 	var indexes []Block_Chain.DATA
 	json.Unmarshal(data, &indexes)
 
+	p := Secret_Share.FixedPara()
 	for i := 0; i < len(indexes); i += 7 {
 		count := 0
 		var cipher []*big.Int
-		var p big.Int
 		var choice []int
-		p = *indexes[i].ModNum
 		for j := 0; j < 7; j++ {
 			temp := strings.Split(indexes[i+j].StoreOn, ":")
 			trueUrl := temp[0] + ":" + temp[1] + ":" + strconv.Itoa(port+j) + "/userGetSlice"
@@ -119,7 +118,7 @@ func QueryData(node string, startTime string, endTime string, port int) []IOT_De
 				count++
 			}
 			if count == 4 {
-				msgBytes := Secret_Share.ResotreMsg(cipher, p, choice)
+				msgBytes := Secret_Share.ResotreMsg(cipher, *p, choice)
 				json.Unmarshal(msgBytes, &patient)
 				patients = append(patients, patient)
 				log.Println(patient)
@@ -131,7 +130,7 @@ func QueryData(node string, startTime string, endTime string, port int) []IOT_De
 	return patients
 }
 
-func QueryDataWithSM4(node string, startTime string, endTime string, numOfGroup int, port int, password string) [][]byte {
+func QueryDataWithSM4(node string, startTime string, endTime string, port int, password string) [][]byte {
 	var msg [][]byte
 	file, _ := os.Open("public.pem")
 	iotId := IOT_Device.GenerateIotId(file)
@@ -158,10 +157,11 @@ func QueryDataWithSM4(node string, startTime string, endTime string, numOfGroup 
 	//for i := 0; i < len(indexes); i++ {
 	//	fmt.Println(indexes[i])
 	//}
-	p := indexes[0].ModNum
-	fmt.Println(p.String())
-	for k := 0; k < numOfGroup; k++ {
-		for i := 0; i < len(indexes); i += 7 {
+	p := Secret_Share.FixedPara()
+	numOfGroup := indexes[1].NumOfGroup
+
+	for i := 0; i < len(indexes); i += 7 {
+		for k := 0; k < numOfGroup; k++ {
 			count := 0
 			var cipher []*big.Int
 			var choice []int
@@ -193,6 +193,7 @@ func QueryDataWithSM4(node string, startTime string, endTime string, numOfGroup 
 			}
 		}
 	}
+
 	fmt.Println("End of data querying!")
 	//final := SM4.DecryptWithPadding(msg, "123456")
 	//finalFile, _ := os.OpenFile("final.jpg", os.O_RDWR|os.O_CREATE, 0755)

@@ -1,7 +1,6 @@
 package Block_Chain
 
 import (
-	"math/big"
 	"time"
 )
 
@@ -31,5 +30,5 @@ type DATA struct {
 	Hash         []byte
 	StoreOn      string
 	IndexOfGroup int
-	ModNum       *big.Int
+	NumOfGroup   int
 }
