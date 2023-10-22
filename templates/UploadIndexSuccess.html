@@ -328,10 +328,9 @@
                                     </div>
                                 </div>
 
-
                                 <br>
                                 <div class="row-cols-auto">
-                                    <button type="submit" class="btn app-btn-primary" href="SBorrows">提交电子病历</button>
+                                    <button type="submit" class="btn app-btn-primary">提交电子病历</button>
                                 </div>
                             </form>
                         </div><!--//app-card-body-->
@@ -339,11 +338,12 @@
                 </div>
             </div><!--//row-->
             <div class="alert alert-success alert-dismissible">
-                <button type="button" class="close" data-dismiss="alert"
-                        aria-hidden="true">
-                    &times;
-                </button>
-                Successfully!
+                <form action="../upload" method="get">
+                    <button type="submit" class="close" data-dismiss="alert" aria-hidden="true">
+                        &times;
+                    </button>
+                    上传成功!
+                </form>
             </div>
             <hr class="my-4">
         </div><!--//container-fluid-->

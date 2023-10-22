@@ -20,6 +20,11 @@ import (
 	"strings"
 )
 
+type PatientRank struct {
+	Score   float64
+	Patient IOT_Device.Patient
+}
+
 //func ReceiveKeys() *gin.Engine {
 //	router := gin.Default()
 //	router.MaxMultipartMemory = 8 << 20
@@ -130,14 +135,11 @@ func QueryData(node string, startTime string, endTime string, port int) []IOT_De
 	return patients
 }
 
-func QueryDataWithSM4(node string, startTime string, endTime string, port int, password string) [][]byte {
+func QueryDataWithSM4(identity string, node string, startTime string, endTime string, port int, password string) [][]byte {
 	var msg [][]byte
-	file, _ := os.Open("public.pem")
-	iotId := IOT_Device.GenerateIotId(file)
-	println(iotId)
-	defer file.Close()
+
 	body := url.Values{
-		"iotId":     {iotId},
+		"iotId":     {identity},
 		"startTime": {startTime},
 		"endTime":   {endTime},
 	}
@@ -206,6 +208,14 @@ func QueryDataWithSM4(node string, startTime string, endTime string, port int, p
 	return msg
 }
 
+func RestoreStructFromMsg(Msg [][]byte) IOT_Device.Patient {
+	var patient IOT_Device.Patient
+	final := SM4.DecryptWithPadding(Msg, "123456")
+	plain := SM4.WithdrawPadding(final)
+	json.Unmarshal(plain, &patient)
+	return patient
+}
+
 func UserGetSlice(address string, hash []byte) []byte {
 
 	body := url.Values{
@@ -238,7 +248,8 @@ func UserGetSliceWithSM4(address string, hash []byte, index string) []byte {
 	}
 }
 
-func QueryDocumentRank(scores []SearchableEncrypt.DocumentRank) {
+func QueryDocumentRank(scores []SearchableEncrypt.DocumentRank) []PatientRank {
+	var patients []PatientRank
 	sort.Sort(SearchableEncrypt.DocumentScores(scores))
 	for index, document := range scores {
 		if index == 3 {
@@ -249,8 +260,17 @@ func QueryDocumentRank(scores []SearchableEncrypt.DocumentRank) {
 		startTime := document.TimeStamp.Format("2006-01-02 15:04:05")
 		endTime := document.TimeStamp.Format("2006-01-02 15:04:05")
 		fmt.Println("document score:", document.Score)
-		QueryData(nodeToQuery, startTime, endTime, portForSendSlice)
+		//fmt.Println("identity:", document.UserID)
+		msg := QueryDataWithSM4(document.UserID, nodeToQuery, startTime, endTime, portForSendSlice, "123456")
+		patient := RestoreStructFromMsg(msg)
+		temp := PatientRank{
+			Score:   document.Score,
+			Patient: patient,
+		}
+		patients = append(patients, temp)
+		fmt.Println(patient)
 	}
+	return patients
 }
 
 func QueryByKeyWords(query []string) {
@@ -262,4 +282,9 @@ func QueryByKeyWords(query []string) {
 func QueryByKeyWordsWithSplitMat(query []string) {
 	documentScores := SearchableEncrypt.QueryByKeyWordsWithSplitMat(query)
 	QueryDocumentRank(documentScores)
+}
+
+func QueryByKeyWordsWithSm4(query []string) []PatientRank {
+	documentScores := SearchableEncrypt.QueryByKeyWordsWithSplitMat(query)
+	return QueryDocumentRank(documentScores)
 }

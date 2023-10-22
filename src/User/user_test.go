@@ -1,6 +1,7 @@
 package User
 
 import (
+	"IOT_Storage/src/IOT_Device"
 	"IOT_Storage/src/SM4"
 	"IOT_Storage/src/Secret_Share"
 	"bufio"
@@ -63,7 +64,7 @@ func TestQueryDataWithSM4(t *testing.T) {
 	node := "http://192.168.42.129:8000"
 	startTime := "2023-10-21 18:56:10"
 	endTime := "2023-10-21 18:56:10"
-	msg := QueryDataWithSM4(node, startTime, endTime, 2218, 9000, "123456")
+	msg := QueryDataWithSM4("6866974dc2b54eb8c5363f174f6f0c0e8d6a69ba3d9035957dceff69992402f2", node, startTime, endTime, 9000, "123456")
 	for j := 0; j < len(sm4Msg); j++ {
 		for k := 0; k < len(sm4Msg[j]); k++ {
 			fmt.Println(sm4Msg[j][k] == msg[j][k])
@@ -72,9 +73,31 @@ func TestQueryDataWithSM4(t *testing.T) {
 }
 
 func TestQueryData(t *testing.T) {
+	var patient IOT_Device.Patient
 	node := "http://192.168.42.129:8000"
 
-	startTime := "2023-10-21 18:52:54"
-	endTime := "2023-10-21 18:52:54"
-	QueryDataWithSM4(node, startTime, endTime, 17, 9000, "123456")
+	startTime := "2023-10-22 14:14:00"
+	endTime := "2023-10-22 14:14:00"
+	msg := QueryDataWithSM4("6866974dc2b54eb8c5363f174f6f0c0e8d6a69ba3d9035957dceff69992402f2", node, startTime, endTime, 9000, "123456")
+	patient = RestoreStructFromMsg(msg)
+	fmt.Println(patient)
+}
+
+func TestQueryByKeyWordsWithSplitMat(t *testing.T) {
+	//nodes := []string{
+	//	"http://192.168.42.129",
+	//	"http://192.168.42.129",
+	//	"http://192.168.42.129",
+	//	"http://192.168.42.129",
+	//	"http://192.168.42.129",
+	//	"http://192.168.42.129",
+	//	"http://192.168.42.129",
+	//}
+	//SearchableEncrypt.SendSplitMat(nodes)
+	query := []string{
+		"内科",
+		"心率失常",
+		"胸闷",
+	}
+	QueryByKeyWordsWithSm4(query)
 }

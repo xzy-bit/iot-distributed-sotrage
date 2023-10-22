@@ -9,13 +9,13 @@ import (
 func TestBuildTraverser(t *testing.T) {
 	filepath := string("backup.json")
 	tree := BuildTraverser(filepath)
-
+	fmt.Println(tree)
 	if tree.Empty() == true {
 		fmt.Errorf("Fail to create tree!\n")
 	}
-	fmt.Println(tree)
-	start, _ := time.Parse("2006-01-02 15:04:05", "2023-09-09 13:51:00")
-	end, _ := time.Parse("2006-01-02 15:04:05", "2023-09-09 13:51:20")
-	data := QueryData(tree, "804d0d9378026bcda165ac37e634b5812ba192f6", start, end)
+	//fmt.Println(tree)
+	start, _ := time.Parse("2006-01-02 15:04:05", "2023-10-22 14:14:00")
+	end, _ := time.Parse("2006-01-02 15:04:05", "2023-10-22 14:14:00")
+	data := QueryData(tree, "6866974dc2b54eb8c5363f174f6f0c0e8d6a69ba3d9035957dceff69992402f2", start, end)
 	fmt.Println(data)
 }

@@ -16,6 +16,15 @@ import (
 	"time"
 )
 
+type Result struct {
+	Rank     int
+	Score    string
+	Features []string
+	Name     string
+	Identity string
+	Time     string
+}
+
 func ParseDateLocal(date string) string {
 	date = strings.ReplaceAll(date, "T", " ")
 	date = date + ":00"
@@ -91,7 +100,7 @@ func NodeUploadPageForUser(rg *gin.RouterGroup) {
 			Features:    features,
 		}
 		IOT_Device.UploadSliceAndIndexWithSplitMat(patient)
-		context.Redirect(200, "../index")
+		context.HTML(200, "UploadIndexSuccess.html", gin.H{})
 	})
 }
 
@@ -149,6 +158,22 @@ func NodeLoginPage(rg *gin.RouterGroup, db *sql.DB) {
 	})
 }
 
+func PatientsToResult(patient []User.PatientRank) []Result {
+	var result []Result
+	for i := 0; i < len(patient); i++ {
+		temp := Result{
+			Rank:     i + 1,
+			Score:    strconv.FormatFloat(patient[i].Score, 'f', 2, 64),
+			Features: patient[i].Patient.Features,
+			Name:     patient[i].Patient.Name,
+			Identity: patient[i].Patient.Identity,
+			Time:     patient[i].Patient.TimeStamp.Format("2006-01-02 15:04:05"),
+		}
+		result = append(result, temp)
+	}
+	return result
+}
+
 func NodeSearchServerForUser(rg *gin.RouterGroup) {
 	router := rg.Group("/DoctorSearch")
 	router.Static("/assets", "./resources/webapp/assets")
@@ -156,44 +181,48 @@ func NodeSearchServerForUser(rg *gin.RouterGroup) {
 		variety := context.Query("variety")
 		log.Println(variety)
 		if variety == "identity" {
-			//idnumber := context.PostForm("idnumber")
+			idnumber := context.PostForm("idnumber")
 			startTime := context.PostForm("starttime")
 			startTime = ParseDateLocal(startTime)
 			endTime := context.PostForm("endtime")
 			endTime = ParseDateLocal(endTime)
 			portForSendSlice := 9000
 			nodeToQuery := "http://192.168.42.129:8000"
-			patients := User.QueryData(nodeToQuery, startTime, endTime, portForSendSlice)
-			context.JSONP(200, patients)
+			identity := IOT_Device.Sm3(idnumber)
+			log.Println(identity)
+			msg := User.QueryDataWithSM4(identity, nodeToQuery, startTime, endTime, portForSendSlice, "123456")
+			patient := User.RestoreStructFromMsg(msg)
+			context.HTML(http.StatusOK, "SearchResult.html", gin.H{
+				"PatientName":     patient.Name,
+				"PatientAge":      patient.Age,
+				"PatientCountry":  patient.Country,
+				"PatientNation":   patient.Nation,
+				"PatientSex":      patient.Sex,
+				"PatientMatch":    patient.Match,
+				"PatientIdentity": patient.Identity,
+				"PatientPosition": patient.Career,
+				"ArriveTime":      patient.TimeStamp.Format("2006-01-02 15:04:05"),
+				"description":     patient.Description,
+				"Keywords":        patient.Features,
+			})
 		} else {
-			faculty := context.PostForm("faculties")
-			features := context.PostFormArray("features")
-			log.Println(faculty)
-			log.Println(features)
+			faculties := context.PostForm("faculties")
+			heart := context.PostForm("heart")
+			breath := context.PostForm("breath")
+			belly := context.PostForm("belly")
+			limb := context.PostForm("limbs")
+			head := context.PostForm("head")
+			emotion := context.PostForm("emotion")
+			skin := context.PostForm("skin")
+			query := []string{
+				faculties, heart, breath, belly, limb, head, emotion, skin,
+			}
+			patients := User.QueryByKeyWordsWithSm4(query)
+			results := PatientsToResult(patients)
+			log.Println(results)
+			context.HTML(200, "SearchResultKeyWords.html", gin.H{
+				"data": results,
+			})
 		}
-	})
-}
-
-func NodeResultPageForUser(rg *gin.RouterGroup) {
-	router := rg.Group("/result")
-	router.Static("/assets", "./resources/webapp/assets")
-	router.GET("/", func(context *gin.Context) {
-		context.HTML(200, "Result.html", gin.H{})
-	})
-}
-
-func NodeSearchResultForUser(rg *gin.RouterGroup) {
-	router := rg.Group("/searchresult")
-	router.Static("/assets", "./resources/webapp/assets")
-	router.GET("/", func(context *gin.Context) {
-		context.HTML(200, "SearchResult.html", gin.H{})
-	})
-}
-
-func NodeSearchResultByKeyWords(rg *gin.RouterGroup) {
-	router := rg.Group("/searchresultByKeyWords")
-	router.Static("/assets", "./resources/webapp/assets")
-	router.GET("/", func(context *gin.Context) {
-		context.HTML(200, "SearchResultKeyWords.html", gin.H{})
 	})
 }

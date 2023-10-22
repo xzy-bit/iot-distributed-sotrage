@@ -133,6 +133,7 @@
                                     <thead class="thead-dark">
                                     <tr>
                                         <th scope="col">排名</th>
+                                        <th scope="col">分数</th>
                                         <th scope="col">关键字</th>
                                         <th scope="col">姓名</th>
                                         <th scope="col">身份证号</th>
@@ -140,34 +141,11 @@
                                     </tr>
                                     </thead>
                                     <tbody>
+                                    {{ range .data}}
                                     <tr>
-                                        <th scope="row">1</th>
-                                        <td>内科/心率失常/恶心呕吐</td>
-                                        <td>黎林</td>
-                                        <td>18499584516</td>
-                                        <td>2023-10-22 00:28</td>
+                                        <td>{{.Rank}}</td><td>{{.Score}}</td><td>{{.Features}}</td><td>{{.Name}}</td><td>{{.Identity}}</td><td>{{.Time}}</td>
                                     </tr>
-                                    <tr>
-                                        <th scope="row">2</th>
-                                        <td>内科/高血压/恶心呕吐</td>
-                                        <td>朱洋</td>
-                                        <td>15233446863</td>
-                                        <td>2023-10-22 01:05</td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">3</th>
-                                        <td>内科/消化不良/眩晕</td>
-                                        <td>朱洋</td>
-                                        <td>17370282002</td>
-                                        <td>2023-10-22 01:08</td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">4</th>
-                                        <td>儿科/高血压/眩晕</td>
-                                        <td>黎熙涵</td>
-                                        <td>19561465439</td>
-                                        <td>2023-10-22 01:11</td>
-                                    </tr>
+                                    {{end}}
                                     </tbody>
                                 </table>
                             </div>
@@ -195,4 +173,3 @@
 
 </body>
 </html>
-

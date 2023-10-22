@@ -72,9 +72,6 @@ func MatrixPrint(m mat.Matrix) {
 	fmt.Printf("%v\n", formattedMatrix)
 }
 
-func VectorPrint(v mat.Vector) {
-}
-
 func GenerateRandomMatrix(n int) *mat.Dense {
 	data := make([]float64, n*n)
 	for i := range data {
@@ -631,6 +628,7 @@ func SendSplitMat(nodes []string) {
 
 		}
 	}
+	fmt.Println("Send split mat successfully!")
 }
 
 func QueryByKeyWordsWithSplitMat(queryKeyWords []string) []DocumentRank {
