@@ -2,7 +2,7 @@ package Node
 
 import (
 	"IOT_Storage/src/Database"
-	"IOT_Storage/src/IOT_Device"
+	"IOT_Storage/src/Patient_Data"
 	"IOT_Storage/src/User"
 	"bytes"
 	"database/sql"
@@ -85,7 +85,7 @@ func NodeUploadPageForUser(rg *gin.RouterGroup) {
 		features := []string{
 			faculties, heart, breath, belly, limb, head, emotion, skin,
 		}
-		patient := IOT_Device.Patient{
+		patient := Patient_Data.Patient{
 			Identity:    identity,
 			Name:        name,
 			Age:         age,
@@ -99,7 +99,7 @@ func NodeUploadPageForUser(rg *gin.RouterGroup) {
 			Image:       imageBuffer.Bytes(),
 			Features:    features,
 		}
-		IOT_Device.UploadSliceAndIndexWithSplitMat(patient)
+		Patient_Data.UploadSliceAndIndexWithSplitMat(patient)
 		context.HTML(200, "UploadIndexSuccess.html", gin.H{})
 	})
 }
@@ -188,7 +188,7 @@ func NodeSearchServerForUser(rg *gin.RouterGroup) {
 			endTime = ParseDateLocal(endTime)
 			portForSendSlice := 9000
 			nodeToQuery := "http://192.168.42.129:8000"
-			identity := IOT_Device.Sm3(idnumber)
+			identity := Patient_Data.Sm3(idnumber)
 			log.Println(identity)
 			msg := User.QueryDataWithSM4(identity, nodeToQuery, startTime, endTime, portForSendSlice, "123456")
 			patient := User.RestoreStructFromMsg(msg)

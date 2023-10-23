@@ -1,4 +1,4 @@
-package IOT_Device
+package Patient_Data
 
 import (
 	"IOT_Storage/src/Controller"

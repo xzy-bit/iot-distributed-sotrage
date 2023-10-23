@@ -4,8 +4,8 @@ import (
 	"IOT_Storage/src/Block_Chain"
 	"IOT_Storage/src/Controller"
 	"IOT_Storage/src/File_Index"
-	"IOT_Storage/src/IOT_Device"
 	"IOT_Storage/src/Identity_Verify"
+	"IOT_Storage/src/Patient_Data"
 	"IOT_Storage/src/Secret_Share"
 	"bufio"
 	"bytes"
@@ -279,7 +279,7 @@ func NodeQuerySlice(address string, hash []byte) []byte {
 }
 
 func NodeQueryDataForUSer(rg *gin.RouterGroup) {
-	var patient IOT_Device.Patient_Test
+	var patient Patient_Data.Patient_Test
 	router := rg.Group("/queryForUser")
 	router.POST("/", func(context *gin.Context) {
 		log.Println("Receive query request")

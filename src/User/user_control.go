@@ -2,7 +2,7 @@ package User
 
 import (
 	"IOT_Storage/src/Block_Chain"
-	"IOT_Storage/src/IOT_Device"
+	"IOT_Storage/src/Patient_Data"
 	"IOT_Storage/src/SM4"
 	"IOT_Storage/src/SearchableEncrypt"
 	"IOT_Storage/src/Secret_Share"
@@ -22,7 +22,7 @@ import (
 
 type PatientRank struct {
 	Score   float64
-	Patient IOT_Device.Patient
+	Patient Patient_Data.Patient
 }
 
 //func ReceiveKeys() *gin.Engine {
@@ -76,11 +76,11 @@ type PatientRank struct {
 //	return true
 //}
 
-func QueryData(node string, startTime string, endTime string, port int) []IOT_Device.Patient_Test {
-	var patient IOT_Device.Patient_Test
-	var patients []IOT_Device.Patient_Test
+func QueryData(node string, startTime string, endTime string, port int) []Patient_Data.Patient_Test {
+	var patient Patient_Data.Patient_Test
+	var patients []Patient_Data.Patient_Test
 	file, _ := os.Open("public.pem")
-	iotId := IOT_Device.GenerateIotId(file)
+	iotId := Patient_Data.GenerateIotId(file)
 	println(iotId)
 	defer file.Close()
 	body := url.Values{
@@ -208,8 +208,8 @@ func QueryDataWithSM4(identity string, node string, startTime string, endTime st
 	return msg
 }
 
-func RestoreStructFromMsg(Msg [][]byte) IOT_Device.Patient {
-	var patient IOT_Device.Patient
+func RestoreStructFromMsg(Msg [][]byte) Patient_Data.Patient {
+	var patient Patient_Data.Patient
 	final := SM4.DecryptWithPadding(Msg, "123456")
 	plain := SM4.WithdrawPadding(final)
 	json.Unmarshal(plain, &patient)

@@ -1,7 +1,7 @@
 package User
 
 import (
-	"IOT_Storage/src/IOT_Device"
+	"IOT_Storage/src/Patient_Data"
 	"IOT_Storage/src/SM4"
 	"IOT_Storage/src/Secret_Share"
 	"bufio"
@@ -73,7 +73,7 @@ func TestQueryDataWithSM4(t *testing.T) {
 }
 
 func TestQueryData(t *testing.T) {
-	var patient IOT_Device.Patient
+	var patient Patient_Data.Patient
 	node := "http://192.168.42.129:8000"
 
 	startTime := "2023-10-22 14:14:00"
