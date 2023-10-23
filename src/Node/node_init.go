@@ -191,6 +191,7 @@ func NodeInit() {
 	NodeLoginPage(v1, db)
 	NodeSearchPageForUser(v1)
 	NodeSearchServerForUser(v1)
+	NodeDownload(v1)
 	router_for_front_page.Run(":" + strconv.Itoa(nodeConfig.NodeId+nodeConfig.PortForQuery))
 
 	//queryIndex := NodeGetQuery()

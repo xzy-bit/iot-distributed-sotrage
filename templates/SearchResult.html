@@ -128,58 +128,59 @@
                     <div class="app-card app-card-settings shadow-sm p-4">
 
                         <div class="app-card-body">
-                            <form class="settings-form" method="post" action="../upload" enctype="multipart/form-data">
+                            <form class="settings-form" method="post" action="../download" enctype="multipart/form-data">
                                 <div class="row g-3">
                                     <div class="col-md-3">
                                         <label class="form-label">姓名</label>
-                                        <input name="patientName" id="name" class="form-control" type="text" placeholder={{.PatientName}} >
+                                        <input name="patientName" id="name" class="form-control" type="text" placeholder={{.PatientName}} value={{.PatientName}}>
                                     </div>
                                     <div class="col-md-2">
                                         <label class="form-label">年龄</label>
-                                        <input name="patientAge" id="age" class="form-control" type="text" placeholder={{.PatientAge}}  >
+                                        <input name="patientAge" id="age" class="form-control" type="text" placeholder={{.PatientAge}}  value={{.PatientAge}}>
                                     </div>
                                     <div class="col-md-3">
                                         <label class="form-label">国籍</label>
-                                        <input name="patientCountry"  id="country" class="form-control" type="text" placeholder={{.PatientCountry}}  >
+                                        <input name="patientCountry"  id="country" class="form-control" type="text" placeholder={{.PatientCountry}}  value={{.PatientCountry}}>
                                     </div>
                                     <div class="col-md-3">
                                         <label class="form-label">民族</label>
-                                        <input name="patientNation" id="nation" class="form-control" type="text" placeholder={{.PatientNation}} >
+                                        <input name="patientNation" id="nation" class="form-control" type="text" placeholder={{.PatientNation}} value={{.PatientNation}}>
                                     </div>
                                 </div>
                                 <div class="row g-3">
                                     <div class="col-md-4">
                                         <label class="form-label">性别</label>
-                                        <input name="patientSex" id="sex" class="form-control" type="text" placeholder={{.PatientSex}} >
+                                        <input name="patientSex" id="sex" class="form-control" type="text" placeholder={{.PatientSex}} value={{.PatientSex}}>
                                     </div>
                                     <div class="col-md-5">
                                         <label class="form-label">婚姻情况</label>
-                                        <input name="patientMatch" id="match" class="form-control" type="text" placeholder={{.PatientMatch}} >
+                                        <input name="patientMatch" id="match" class="form-control" type="text" placeholder={{.PatientMatch}} value={{.PatientMatch}}>
                                     </div>
                                 </div>
                                 <div class="row g-3">
                                     <div class="col-md-6">
                                         <label class="form-label">身份证号</label>
-                                        <input name="idcard" id="identity" class="form-control" type="text" placeholder={{.PatientIdentity}} >
+                                        <input name="idcard" id="identity" class="form-control" type="text" placeholder={{.PatientIdentity}} value={{.PatientIdentity}}>
                                     </div>
                                     <div class="col-md-3">
                                         <label class="form-label">职业</label>
-                                        <input name="profession" id="career" class="form-control" type="text" placeholder={{.PatientPosition}} >
+                                        <input name="profession" id="career" class="form-control" type="text" placeholder={{.PatientPosition}} value={{.PatientPosition}}>
                                     </div>
                                 </div>
 
                                 <div class="row g-3">
                                     <div class="col-md-4">
                                         <label for="time" class="form-label">就诊时间</label>
-                                        <input name="timeStamp" class="form-control" type="text" id="time" placeholder={{.ArriveTime}} >
+                                        <input name="timeStamp" class="form-control" type="text" id="time" placeholder={{.ArriveTime}} value={{.ArriveTime}}>
                                     </div>
                                 </div>
 
 
                                 <div class="col-md-8">
                                     <label for="description" class="form-label">症状描述</label>
+                                    <input name="description" class="form-control" type="text" value={{.description}}>
                                     <div class="input-group">
-                                        <textarea name="description" id="description" class="form-control" aria-label={{.description}} rows="20"></textarea>
+                                        <textarea name="descriptions " id="description" class="form-control" rows="20" placeholder={{.description}}></textarea>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -193,11 +194,15 @@
                                 <div class="row g-3">
                                     <div class="col-md-12">
                                         <label for="time" class="form-label">关键字</label>
+                                        <input name="keywords" class="form-control" type="text" style="display: none;" value={{.Keywords}}>
                                         <div class="input-group">
-                                            <textarea name="keywords" class="form-control" type="text" aria-label={{.Keywords}} rows="20"></textarea>
+                                            <textarea name="keyword" class="form-control" type="text" rows="20" placeholder={{.Keywords}}></textarea>
                                         </div>
-
                                     </div>
+                                </div>
+                                <br>
+                                <div class="row-cols-auto">
+                                    <button type="submit" class="btn app-btn-primary">下载电子病历</button>
                                 </div>
                             </form>
                         </div><!--//app-card-body-->

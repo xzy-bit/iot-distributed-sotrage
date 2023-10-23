@@ -124,7 +124,7 @@
             <h1 class="app-page-title">查询结果</h1>
             <hr class="mb-4">
             <div class="row g-4 settings-section">
-                <div class="col-12 col-md-9">
+                <div class="col-12 col-md-11">
                     <div class="app-card app-card-settings shadow-sm p-4">
 
                         <div class="app-card-body">
@@ -138,12 +138,25 @@
                                         <th scope="col">姓名</th>
                                         <th scope="col">身份证号</th>
                                         <th scope="col">就诊时间</th>
+                                        <th scope="col">操作</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     {{ range .data}}
                                     <tr>
-                                        <td>{{.Rank}}</td><td>{{.Score}}</td><td>{{.Features}}</td><td>{{.Name}}</td><td>{{.Identity}}</td><td>{{.Time}}</td>
+                                        <td>{{.Rank}}</td><td>{{.Score}}</td>
+                                        <td>{{.Features}}</td><td>{{.Name}}</td>
+                                        <td>{{.Identity}}</td><td>{{.Time}}</td>
+                                        <td>
+                                            <form class="settings-form" action="../DoctorSearch?variety=identity&timetoparse=false" method="post">
+                                                <input name="idnumber" value={{.Identity}} style="display: none;">
+                                                <input name="starttime" value={{.Time}} style="display: none;">
+                                                <input name="endtime" value={{.Time}} style="display: none;">
+                                                <div>
+                                                    <button type="submit" class="btn app-btn-primary">详情</button>
+                                                </div>
+                                            </form>
+                                        </td>
                                     </tr>
                                     {{end}}
                                     </tbody>
