@@ -96,14 +96,16 @@ func NodeGetSlice() *gin.Engine {
 		iotId := context.PostForm("iotId")
 		serialStr := context.PostForm("serial")
 		address := context.PostForm("address")
-		numOfGroup := context.PostForm("numOfGroup")
+		num := context.PostForm("numOfGroup")
 		timeStamp := context.PostForm("timeStamp")
 		hash := context.PostForm("hash")
 		index := context.PostForm("indexOfGroup")
+		indexOfGroup, _ := strconv.Atoi(index)
+		numOfGroup, _ := strconv.Atoi(num)
 
-		num, _ := strconv.Atoi(index)
+		//log.Println(indexOfGroup)
 
-		dataIndex := GenerateDATA(iotId, serialStr, address, numOfGroup, timeStamp, hash, num)
+		dataIndex := GenerateDATA(iotId, serialStr, address, numOfGroup, timeStamp, hash, indexOfGroup)
 		AddDataToCache(dataIndex)
 		log.Println("Add data index to cache...")
 		log.Println(Head.Data)
@@ -246,6 +248,8 @@ func NodeGetQuery(rg *gin.RouterGroup) {
 
 		start, _ := time.Parse("2006-01-02 15:04:05", startTime)
 		end, _ := time.Parse("2006-01-02 15:04:05", endTIme)
+		//log.Println(startTime)
+		//log.Println(endTIme)
 
 		indexes := File_Index.QueryData(tree, iotId, start, end)
 

@@ -27,8 +27,8 @@ type DATA struct {
 	DeviceID     string
 	TimeStamp    time.Time
 	Serial       int
+	IndexOfGroup int
 	Hash         []byte
 	StoreOn      string
-	IndexOfGroup int
 	NumOfGroup   int
 }
