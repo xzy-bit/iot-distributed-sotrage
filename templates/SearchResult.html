@@ -178,16 +178,16 @@
 
                                 <div class="col-md-8">
                                     <label for="description" class="form-label">症状描述</label>
-                                    <input name="description" class="form-control" type="text" value={{.description}}>
+                                    <input name="description" class="form-control" type="text" value={{.description}} style="display: none">
                                     <div class="input-group">
                                         <textarea name="descriptions " id="description" class="form-control" rows="20" placeholder={{.description}}></textarea>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <label for="image" class="form-label">医学影像上传</label>
+                                <div class="col-md-4">
+                                    <label for="image" class="form-label">医学影像</label>
                                     <div class="input-group mb-3">
-                                        <input name="image" type="file" class="form-control" id="image" multiple>
-                                        <label class="input-group-text" for="image">上传文件</label>
+                                        <img type="image" class="form-control" id="image" multiple>
+<!--                                        <label class="input-group-text" for="image">上传文件</label>-->
                                     </div>
                                 </div>
 
